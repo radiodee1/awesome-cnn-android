@@ -1,5 +1,7 @@
 package org.davidliebman.android.ime;
 
+import android.content.Context;
+
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
@@ -16,9 +18,17 @@ public class FileManager {
     String name = "lenet_example_digits";
     String homeDir = System.getProperty("user.home") + File.separator +"workspace" + File.separator;
 
+    Context mContext ;
+    int resId = -1;
+
     FileManager (  String name  ) {
         setFileName(name);
         //model = m;
+    }
+
+    FileManager (  Context c, int mResID ) {
+        mContext = c;
+        resId = mResID;
     }
 
     public MultiLayerNetwork getModel() {return model;}
@@ -34,13 +44,24 @@ public class FileManager {
 
     public void loadModel(MultiLayerNetwork m ) throws Exception{
         model = m;
-        File filePath = new File(fileName);
-        DataInputStream dis = new DataInputStream(new FileInputStream(filePath));
-        INDArray newParams = Nd4j.read(dis);
-        dis.close();
+        INDArray newParams;
+        if (resId != -1) {
+            File filePath = new File(fileName);
+            DataInputStream dis = new DataInputStream(new FileInputStream(filePath));
+
+            newParams = Nd4j.read(dis);
+            dis.close();
+        }
+        else {
+            InputStream is = mContext.getResources().openRawResource(resId);
+            DataInputStream dis = new DataInputStream( is );
+            newParams = Nd4j.read(dis);
+            dis.close();
+        }
         model.setParameters(newParams);
     }
 
+    /*
     public void saveModel(MultiLayerNetwork m) throws Exception {
         model = m;
         //Write the network parameters:
@@ -52,4 +73,5 @@ public class FileManager {
         dos.flush();
         dos.close();
     }
+    */
 }

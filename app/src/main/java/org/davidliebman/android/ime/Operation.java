@@ -30,7 +30,7 @@ public class Operation {
     INDArray singleInput;
     String singleOutput;
 
-    CharacterEditor editor;
+    //CharacterEditor editor;
 
     int batchSize;
     int epochs;
@@ -53,7 +53,7 @@ public class Operation {
     private static final Logger log = LoggerFactory.getLogger(Operation.class);
     public boolean saveOnExit = true;
 
-    public Operation(Network model, DataSetSplit data, int batchSize, int epochs, int iterations) throws Exception{
+    public Operation(Network model, Object data, int batchSize, int epochs, int iterations) throws Exception{
         this.network = model;
         this.model = model.getModel();
         //this.data = data;
