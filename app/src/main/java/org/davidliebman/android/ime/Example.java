@@ -4,6 +4,8 @@ package org.davidliebman.android.ime;
  * Created by dave on 1/18/16.
  */
 
+        import android.content.Context;
+
         import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
         import org.deeplearning4j.eval.Evaluation;
         import org.deeplearning4j.nn.api.OptimizationAlgorithm;
@@ -46,7 +48,11 @@ public class Example {
     int iterations = 1; //10
     int nEpochs = 1;
 
-    public Example () throws Exception {
+    Context mContext ;
+
+    public Example ( Context c , MainActivity editor ) throws Exception {
+
+        mContext = c;
 
         batchSize = 1;
         nEpochs = 1;
@@ -59,7 +65,7 @@ public class Example {
         Network cnn1 = new Network(oneHot1.length());
         //DataSetSplit data1 = new DataSetSplit(operation1);
         Operation opTest1 = new Operation(cnn1, null, batchSize, nEpochs, iterations);
-        opTest1.setFileManager( new FileManager("lenet_example_alpha_lower"));
+        opTest1.setFileManager( new FileManager( mContext, R.raw.lenet_example_alpha_lower));
         opTest1.setEvalType(operation1);
 
         int operation2 = Operation.EVAL_SINGLE_ALPHA_UPPER;
@@ -67,7 +73,7 @@ public class Example {
         Network cnn2 = new Network(oneHot2.length());
         //DataSetSplit data2 = new DataSetSplit(operation2);
         Operation opTest2 = new Operation(cnn2, null, batchSize, nEpochs, iterations);
-        opTest2.setFileManager( new FileManager("lenet_example_alpha_upper"));
+        opTest2.setFileManager( new FileManager(mContext, R.raw.lenet_example_alpha_upper));
         opTest2.setEvalType(operation2);
 
         int operation3 = Operation.EVAL_SINGLE_NUMERIC;
@@ -75,52 +81,14 @@ public class Example {
         Network cnn3 = new Network(oneHot3.length());
         //DataSetSplit data3 = new DataSetSplit(operation3);
         Operation opTest3 = new Operation(cnn3, null, batchSize, nEpochs, iterations);
-        opTest3.setFileManager( new FileManager("lenet_example_digits"));
+        opTest3.setFileManager( new FileManager(mContext, R.raw.lenet_example_digits));
         opTest3.setEvalType(operation3);
 
-        //editor.addOperations(opTest1,opTest2,opTest3);
+        editor.addOperations(opTest1,opTest2,opTest3);
 
 
     }
 
-    public static void main(String[] args) throws Exception {
 
-        if (useGui) {
-            Example e = new Example();
-        }
-        else {
-
-            /*
-            int batchSize = 64;
-            int iterations = 1; //10
-            int nEpochs = 1;
-            int operation = Operation.EVAL_TRAIN_NUMERIC_SHOW;
-
-            OneHotOutput oneHot = new OneHotOutput(operation);
-
-            Network cnn = new Network(oneHot.length());
-
-            DataSetSplit data = new DataSetSplit(operation);
-
-            final Operation opTest = new Operation(cnn, data, batchSize, nEpochs, iterations);
-            opTest.setEvalType(operation);
-
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                public void run() {
-                    try {
-
-                        opTest.saveModel();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-
-            opTest.startOperation();
-            */
-        }
-
-    }
 }
 

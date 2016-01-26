@@ -134,6 +134,7 @@ public class Operation {
 
 
 
+    /*
     public void saveModel() throws Exception {
         if(saveOnExit) {
             files.saveModel(model);
@@ -141,7 +142,7 @@ public class Operation {
             System.out.println("save from outside Operation.java");
         }
     }
-
+    */
 
     public static void showSquare(INDArray num) {
         System.out.println("---------");
