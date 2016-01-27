@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.TableRow;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,13 +35,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
         view = new InnerView(this);
-        setContentView((View) view);
+        //setContentView((View) view);
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
 
-        //TableRow screenLoc =(TableRow) findViewById(R.id.botRow);
+        FrameLayout screenLoc = (FrameLayout) findViewById(R.id.innerView);
+        screenLoc.addView(view);
         //screenLoc.addView(new InnerView(this));
 
         /*
@@ -112,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < 28; i++) {
                 for (int j = 0; j < 28; j++) {
                     if (screen[j][i] > 0.5d) {
-                        Log.e("color", "x=" + xx + " y="+yy);
 
                         int xpos = (int) (i * xx) + marginLeft;
                         int ypos = (int) (j * yy) + marginTop;
