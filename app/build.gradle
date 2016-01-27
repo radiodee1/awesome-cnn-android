@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 23 //23
+    buildToolsVersion "23.0.2" //23.0.2
 
     defaultConfig {
         applicationId "org.davidliebman.android.ime"
@@ -12,10 +12,15 @@ android {
         versionName "1.0"
         multiDexEnabled true
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
 
     dexOptions {
-        javaMaxHeapSize "16g" //specify the heap size for the dex process
-        preDexLibraries = false //delete the already predexed libraries
+        javaMaxHeapSize "4g" //specify the heap size for the dex process
+        //preDexLibraries = false //delete the already predexed libraries
+        incremental true
     }
 
     buildTypes {
@@ -26,25 +31,57 @@ android {
     }
 
     packagingOptions {
-        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/DEPENDENCIES.txt'
         exclude 'META-INF/LICENSE'
         exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
         exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/io.netty.versions.properties'
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'META-INF/services/javax.imageio.spi.ImageReaderSpi'
+        exclude 'META-INF/services/javax.imageio.spi.ImageWriterSpi'
+        exclude 'META-INF/services/com.fasterxml.jackson.core.JsonFactory'
     }
 }
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.0.0-alpha6'
+    }
+}
+
+
+repositories {
+    jcenter()
+    mavenLocal()
+}
+
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+    //testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
-    //compile 'org.nd4j:nd4j-x86:0.4-rc3.8'
-    compile ('org.deeplearning4j:deeplearning4j-core:0.4-rc3.8') {
-        exclude module : 'jai-imageio-core'
-        exclude module : 'imegeio-tiff'
-        exclude module : 'canova-nd4j-image'
-        exclude module : 'imageio-jpeg'
-        exclude module : 'netty-buffer'
-        exclude module : 'jackson-core'
+    compile("org.deeplearning4j:deeplearning4j-core:0.4-rc3.8"){
+        exclude group: "ch.qos.logback", module: "logback-core"
+        exclude group: "ch.qos.logback", module: "logback-classic"
+        //exclude module: 'canova-nd4j-image'
+        //exclude group: 'META-INF/io.netty.versions.properties',  module: 'netty-buffer'
+        //exclude group: 'META-INF/io.netty.versions.properties',  module: 'netty-common'
+        //exclude module: 'jackson-dataformat-yaml'
+        //exclude module: 'jackson-core'
     }
+    compile("org.nd4j:nd4j-x86:0.4-rc3.8"){
+        exclude group: "ch.qos.logback", module: "logback-core"
+        exclude group: "ch.qos.logback", module: "logback-classic"
+        //exclude group: 'META-INF/io.netty.versions.properties',  module: 'netty-buffer'
+        //exclude group: 'META-INF/io.netty.versions.properties',  module: 'netty-common'
+    }
+    compile 'com.github.fommil.netlib:all:1.1.2'
 }

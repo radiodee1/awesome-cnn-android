@@ -26,7 +26,7 @@ public class Network {
     private int iterations = 1;
     private int nChannels = 1;
 
-    Logger log = LoggerFactory.getLogger(Network.class);
+    //Logger log = LoggerFactory.getLogger(Network.class);
 
 
     public Network () {
@@ -40,7 +40,7 @@ public class Network {
 
     public void buildNetwork() {
 
-        log.info("Build model.... " + outputNum);
+        //log.info("Build model.... " + outputNum);
         MultiLayerConfiguration.Builder builder = new NeuralNetConfiguration.Builder()
                 .seed(seed)
                 .iterations(iterations)

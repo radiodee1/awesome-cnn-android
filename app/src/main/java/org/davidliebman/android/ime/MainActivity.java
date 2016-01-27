@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,10 +15,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TableRow;
 
 public class MainActivity extends AppCompatActivity {
+
+    Example example;
+    boolean mExampleLoadComplete = false;
+    Context mContext;
+    MainActivity mMyActivity;
 
     double[][] screen = new double[28][28];
     boolean write = true;
@@ -55,6 +62,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         */
+
+
+
+        mContext = this;
+        mMyActivity = this;
+        try {
+            example = new Example(this, this);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        new ExampleInstantiate().execute(0);
+
+
+        Button mRightAccept = (Button) findViewById(R.id.rightAccept);
+        mRightAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
 
     @Override
@@ -178,6 +207,26 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+        }
+    }
+
+    class ExampleInstantiate extends AsyncTask< Integer , Integer , Integer > {
+
+        @Override
+        protected Integer doInBackground(Integer... params) {
+            try {
+                example.setNetworks();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            mExampleLoadComplete = true;
+            super.onPostExecute(integer);
         }
     }
 }

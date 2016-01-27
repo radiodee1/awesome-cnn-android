@@ -40,13 +40,15 @@ package org.davidliebman.android.ime;
  */
 public class Example {
 
-    private static final Logger log = LoggerFactory.getLogger(Example.class);
+    //private static final Logger log = LoggerFactory.getLogger(Example.class);
 
     //CharacterEditor editor ;
     static boolean useGui = true;
     int batchSize = 64;
     int iterations = 1; //10
     int nEpochs = 1;
+
+    MainActivity editor;
 
     Context mContext ;
 
@@ -58,7 +60,27 @@ public class Example {
         nEpochs = 1;
         iterations = 1;
 
+        this.editor = editor;
         //editor = new CharacterEditor();
+
+        String key1 = "com.github.fommil.netlib.BLAS";
+        String prop1 = "com.github.fommil.netlib.F2jBLAS";
+
+        String key2 = "com.github.fommil.netlib.LAPACK";
+        String prop2 = "com.github.fommil.netlib.F2jLAPACK";
+
+        String key3 = "com.github.fommil.netlib.ARPACK";
+        String prop3 = "com.github.fommil.netlib.F2jARPACK";
+
+        System.setProperty(key1,prop1);
+        System.setProperty(key2,prop2);
+        System.setProperty(key3, prop3);
+
+        String res = System.setProperty("org.nd4j.linalg.cpu.force_native","false");
+        //System.out.println("setprop "+res);
+
+    }
+    public void setNetworks() throws Exception{
 
         int operation1 = Operation.EVAL_SINGLE_ALPHA_LOWER;
         OneHotOutput oneHot1 = new OneHotOutput(operation1);

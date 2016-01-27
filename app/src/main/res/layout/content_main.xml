@@ -40,22 +40,22 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New Button"
-                    android:id="@+id/button" />
+                    android:text="LEFT"
+                    android:id="@+id/leftErase" />
 
                 <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New Button"
-                    android:id="@+id/button2" />
+                    android:text="RIGHT"
+                    android:id="@+id/rightAccept" />
 
                 <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New Button"
-                    android:id="@+id/button3" />
+                    android:text="write"
+                    android:id="@+id/writeErase" />
             </LinearLayout>
 
             <LinearLayout
@@ -67,22 +67,22 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New Button"
-                    android:id="@+id/button4" />
+                    android:text="C-LEFT"
+                    android:id="@+id/leftCursor" />
 
                 <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New Button"
-                    android:id="@+id/button5" />
+                    android:text="C-RIGHT"
+                    android:id="@+id/rightCursor" />
 
                 <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="New Button"
-                    android:id="@+id/button6" />
+                    android:text="toggle"
+                    android:id="@+id/toggle" />
             </LinearLayout>
 
         </LinearLayout>

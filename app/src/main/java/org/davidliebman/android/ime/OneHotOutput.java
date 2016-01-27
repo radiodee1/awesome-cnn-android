@@ -1,9 +1,7 @@
 package org.davidliebman.android.ime;
 
 import org.nd4j.linalg.api.ndarray.INDArray;
-import org.nd4j.linalg.factory.Nd4j;
 
-import java.util.ArrayList;
 
 /**
  * Created by dave on 1/21/16.
@@ -13,13 +11,13 @@ public class OneHotOutput {
     String stringList = "";
 
     int start = 0, stop = 0 ;
-    //public static final int TYPE_NUMERALS = 0;
-    //public static final int TYPE_ALPHA_UPPER = 1;
-    //public static final int TYPE_ALPHA_LOWER = 2;
-    //public static final int TYPE_SYMBOL = 4;
-
 
     public OneHotOutput(int type) {
+        String key1 = "com.github.fommil.netlib.BLAS";
+
+        System.out.println(" run with "+System.getProperty(key1,""));
+
+
         switch (type) {
             case Operation.EVAL_SINGLE_NUMERIC:
             case Operation.EVAL_TRAIN_NUMERIC:
@@ -138,6 +136,7 @@ public class OneHotOutput {
         return out ;
     }
 
+    /*
     public INDArray getLabelOutput(String in) {
         INDArray out = Nd4j.create(new double[stringList.length()][1]);
 
@@ -155,4 +154,5 @@ public class OneHotOutput {
         //System.out.println(out.toString());
         return out;
     }
+    */
 }
