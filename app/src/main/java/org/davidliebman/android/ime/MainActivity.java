@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TableRow;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,8 +29,11 @@ public class MainActivity extends AppCompatActivity {
 
     double[][] screen = new double[28][28];
     boolean write = true;
+    int type = Operation.EVAL_SINGLE_ALPHA_UPPER;
 
     Operation [] operations;
+    String mDisplay = "";
+
     private Canvas mCanvas;
 
     private InnerView view;
@@ -80,7 +84,39 @@ public class MainActivity extends AppCompatActivity {
         mRightAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TextView mOutput = (TextView) findViewById(R.id.textView);
 
+                if(mExampleLoadComplete) {
+                    if (operations != null && operations.length == 3) {
+                        try {
+                            switch (type) {
+                                case Operation.EVAL_SINGLE_ALPHA_LOWER:
+                                    mDisplay = "lower ";
+                                    //mOutput = (TextView) findViewById(R.id.textView);
+                                    operations[0].startOperation(getScreen());
+                                    setOutput(operations[0].getOutput());
+                                    break;
+                                case Operation.EVAL_SINGLE_ALPHA_UPPER:
+                                    mDisplay = "upper ";
+                                    //mOutput = (TextView) findViewById(R.id.textView);
+                                    mOutput.setText(mDisplay);
+                                    operations[1].startOperation(getScreen());
+                                    setOutput(operations[1].getOutput());
+                                    break;
+                                case Operation.EVAL_SINGLE_NUMERIC:
+                                    mDisplay = "digits ";
+                                    mOutput.setText(mDisplay);
+                                    operations[2].startOperation(getScreen());
+                                    setOutput(operations[2].getOutput());
+                                    break;
+                            }
+                            clearScreen();
+
+                        } catch (Exception p) {
+                            p.printStackTrace();
+                        }
+                    }
+                }
             }
         });
 
@@ -90,8 +126,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
     public void addOperations ( Operation op1, Operation op2, Operation op3) {
         operations = new Operation[] {op1,op2,op3};
@@ -118,6 +159,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public double [][] getScreen() { return screen ; }
+
+    public void setOutput( String in ) {
+        mDisplay = mDisplay + in;
+        TextView mOutput = (TextView) findViewById(R.id.textView);
+        mOutput.setText(mDisplay);
+    }
+
+    public void clearScreen() {
+        for (int i = 0; i < 28; i ++ ) {
+            for (int j = 0; j < 28; j ++ ) {
+                screen[i][j] = 0.0d;
+            }
+        }
     }
 
     class InnerView extends View {
@@ -147,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                         int xpos = (int) (i * xx) + marginLeft;
                         int ypos = (int) (j * yy) + marginTop;
 
-                        mPaint.setColor(Color.BLUE);
+                        mPaint.setColor(Color.BLACK);
                         canvas.drawRect(xpos, ypos, xpos+ (int) (xx - 2), ypos + (int) (yy - 2), mPaint);
                     }
                 }
@@ -218,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
                 example.setNetworks();
             }
             catch (Exception e) {
+                Log.e("mainactivity","optionsloader");
                 e.printStackTrace();
             }
             return null;
@@ -226,6 +284,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer integer) {
             mExampleLoadComplete = true;
+            mDisplay = "out: ";
+            TextView mOutput = (TextView) findViewById(R.id.textView);
+            mOutput.setText(mDisplay);
             super.onPostExecute(integer);
         }
     }

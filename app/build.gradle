@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+//apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23 //23
@@ -7,7 +8,7 @@ android {
     defaultConfig {
         applicationId "org.davidliebman.android.ime"
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 23 //23
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -50,10 +51,12 @@ android {
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:2.0.0-alpha6'
+        //classpath 'me.tatarka:gradle-retrolambda:3.2.4'
     }
 }
 
@@ -61,6 +64,7 @@ buildscript {
 repositories {
     jcenter()
     mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
@@ -68,7 +72,7 @@ dependencies {
     //testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
-    compile("org.deeplearning4j:deeplearning4j-core:0.4-rc3.8"){
+    compile("org.deeplearning4j:deeplearning4j-core:0.4-rc3.9-SNAPSHOT"){
         exclude group: "ch.qos.logback", module: "logback-core"
         exclude group: "ch.qos.logback", module: "logback-classic"
         //exclude module: 'canova-nd4j-image'
@@ -77,7 +81,7 @@ dependencies {
         //exclude module: 'jackson-dataformat-yaml'
         //exclude module: 'jackson-core'
     }
-    compile("org.nd4j:nd4j-x86:0.4-rc3.8"){
+    compile("org.nd4j:nd4j-x86:0.4-rc3.9-SNAPSHOT"){
         exclude group: "ch.qos.logback", module: "logback-core"
         exclude group: "ch.qos.logback", module: "logback-classic"
         //exclude group: 'META-INF/io.netty.versions.properties',  module: 'netty-buffer'

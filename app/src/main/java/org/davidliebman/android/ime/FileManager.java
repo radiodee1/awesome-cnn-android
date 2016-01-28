@@ -45,7 +45,7 @@ public class FileManager {
     public void loadModel(MultiLayerNetwork m ) throws Exception{
         model = m;
         INDArray newParams;
-        if (resId != -1) {
+        if (resId == -1) {
             File filePath = new File(fileName);
             DataInputStream dis = new DataInputStream(new FileInputStream(filePath));
 
