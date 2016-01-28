@@ -49,6 +49,7 @@ public class Network {
         System.setProperty(key2, prop2);
         System.setProperty(key3, prop3);
 
+        System.setProperty("org.nd4j.linalg.cpu.force_native","false");
 
         buildNetwork();
     }

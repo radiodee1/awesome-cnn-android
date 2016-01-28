@@ -76,7 +76,7 @@ public class Example {
         System.setProperty(key2, prop2);
         System.setProperty(key3, prop3);
 
-        String res = System.setProperty("org.nd4j.linalg.cpu.force_native","false");
+        System.setProperty("org.nd4j.linalg.cpu.force_native","false");
         //System.out.println("setprop "+res);
 
     }
