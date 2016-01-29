@@ -78,18 +78,18 @@ public class Example {
 
         System.setProperty("org.nd4j.linalg.cpu.force_native","false");
         //System.out.println("setprop "+res);
-
+        Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
     }
     public void setNetworks() throws Exception{
 
 
-            int operation1 = Operation.EVAL_SINGLE_ALPHA_LOWER;
-            OneHotOutput oneHot1 = new OneHotOutput(operation1);
-            Network cnn1 = new Network(oneHot1.length());
-            //DataSetSplit data1 = new DataSetSplit(operation1);
-            Operation opTest1 = new Operation(cnn1, null, batchSize, nEpochs, iterations);
-            opTest1.setFileManager(new FileManager(mContext, R.raw.lenet_example_alpha_lower));
-            opTest1.setEvalType(operation1);
+        int operation1 = Operation.EVAL_SINGLE_ALPHA_LOWER;
+        OneHotOutput oneHot1 = new OneHotOutput(operation1);
+        Network cnn1 = new Network(oneHot1.length());
+        //DataSetSplit data1 = new DataSetSplit(operation1);
+        Operation opTest1 = new Operation(cnn1, null, batchSize, nEpochs, iterations);
+        opTest1.setFileManager(new FileManager(mContext, R.raw.lenet_example_alpha_lower));
+        opTest1.setEvalType(operation1);
 
         int operation2 = Operation.EVAL_SINGLE_ALPHA_UPPER;
         OneHotOutput oneHot2 = new OneHotOutput(operation2);

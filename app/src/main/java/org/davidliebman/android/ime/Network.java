@@ -11,6 +11,7 @@ import org.deeplearning4j.nn.conf.layers.SubsamplingLayer;
 import org.deeplearning4j.nn.conf.layers.setup.ConvolutionLayerSetup;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,8 @@ public class Network {
     }
 
     public void buildNetwork() {
+
+        Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
 
         //log.info("Build model.... " + outputNum);
         MultiLayerConfiguration.Builder builder = new NeuralNetConfiguration.Builder()
