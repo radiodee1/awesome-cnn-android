@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     Example example;
     boolean mExampleLoadComplete = false;
+    boolean mExampleReadyForInput = true;
     Context mContext;
     MainActivity mMyActivity;
 
@@ -89,16 +90,20 @@ public class MainActivity extends AppCompatActivity {
                 if(mExampleLoadComplete) {
                     if (operations != null && operations.length == 3) {
                         try {
+                            mExampleReadyForInput = false; // we don't know how long this will take...
+
                             switch (type) {
                                 case Operation.EVAL_SINGLE_ALPHA_LOWER:
                                     mDisplay = "lower ";
-                                    //mOutput = (TextView) findViewById(R.id.textView);
+                                    mOutput.setText(mDisplay);
+
                                     operations[0].startOperation(getScreen());
                                     setOutput(operations[0].getOutput());
                                     break;
                                 case Operation.EVAL_SINGLE_ALPHA_UPPER:
                                     mDisplay = "upper ";
-                                    //mOutput = (TextView) findViewById(R.id.textView);
+                                    mOutput.setText(mDisplay);
+
                                     mOutput.setText(mDisplay);
                                     operations[1].startOperation(getScreen());
                                     setOutput(operations[1].getOutput());
@@ -106,10 +111,12 @@ public class MainActivity extends AppCompatActivity {
                                 case Operation.EVAL_SINGLE_NUMERIC:
                                     mDisplay = "digits ";
                                     mOutput.setText(mDisplay);
+
                                     operations[2].startOperation(getScreen());
                                     setOutput(operations[2].getOutput());
                                     break;
                             }
+                            mExampleReadyForInput = true;
                             clearScreen();
 
                         } catch (Exception p) {
@@ -120,6 +127,55 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        final Button mWriteErase = (Button) findViewById(R.id.writeErase);
+        mWriteErase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (write) {
+                    write = false;
+                    mWriteErase.setText("ERASE");
+                    //System.out.println("erase");
+                }
+                else {
+                    write = true;
+                    mWriteErase.setText("WRITE");
+                    //System.out.println("write");
+                }
+            }
+        });
+
+        final Button mToggle = (Button) findViewById(R.id.toggle);
+        mToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (type) {
+                    case Operation.EVAL_SINGLE_ALPHA_LOWER:
+                        mToggle.setText("UPPER");
+                        type = Operation.EVAL_SINGLE_ALPHA_UPPER;
+                        break;
+                    case Operation.EVAL_SINGLE_ALPHA_UPPER:
+                        mToggle.setText("#NUM#");
+                        type = Operation.EVAL_SINGLE_NUMERIC;
+                        break;
+                    case Operation.EVAL_SINGLE_NUMERIC:
+                        mToggle.setText("lower");
+                        type = Operation.EVAL_SINGLE_ALPHA_LOWER;
+                        break;
+                    default:
+                        mToggle.setText("lower");
+                        type = Operation.EVAL_SINGLE_ALPHA_LOWER;
+                        break;
+                }
+            }
+        });
+
+        Button mLeftErase = (Button) findViewById(R.id.leftErase);
+        mLeftErase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearScreen();
+            }
+        });
     }
 
     @Override
@@ -223,6 +279,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onTouchEvent(MotionEvent event) {
 
+            if(!mExampleReadyForInput) return true;
+
             int sizex = mWidth - (marginRight + marginLeft);
             int sizey = mHeight - (marginTop + marginBottom);
 
@@ -284,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Integer integer) {
             mExampleLoadComplete = true;
-            mDisplay = "out: ";
+            mDisplay = "output ready: ";
             TextView mOutput = (TextView) findViewById(R.id.textView);
             mOutput.setText(mDisplay);
             super.onPostExecute(integer);

@@ -40,21 +40,21 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="LEFT"
+                    android:text="BACKSPACE"
                     android:id="@+id/leftErase" />
 
                 <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="RIGHT"
+                    android:text="ENTER"
                     android:id="@+id/rightAccept" />
 
                 <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="write"
+                    android:text="TOGGLE"
                     android:id="@+id/writeErase" />
             </LinearLayout>
 
@@ -81,7 +81,7 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="toggle"
+                    android:text="UPPER"
                     android:id="@+id/toggle" />
             </LinearLayout>
 
