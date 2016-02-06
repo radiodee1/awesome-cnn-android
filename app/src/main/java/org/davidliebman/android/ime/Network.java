@@ -37,22 +37,7 @@ public class Network {
     public Network(int num ) {
         setOutputNum(num);
 
-        /*
-        String key1 = "com.github.fommil.netlib.BLAS";
-        String prop1 = "com.github.fommil.netlib.F2jBLAS";
 
-        String key2 = "com.github.fommil.netlib.LAPACK";
-        String prop2 = "com.github.fommil.netlib.F2jLAPACK";
-
-        String key3 = "com.github.fommil.netlib.ARPACK";
-        String prop3 = "com.github.fommil.netlib.F2jARPACK";
-
-        System.setProperty(key1, prop1);
-        System.setProperty(key2, prop2);
-        System.setProperty(key3, prop3);
-
-        System.setProperty("org.nd4j.linalg.cpu.force_native","false");
-        */
         buildNetwork();
     }
 

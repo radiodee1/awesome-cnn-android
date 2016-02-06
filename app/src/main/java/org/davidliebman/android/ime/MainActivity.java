@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     Example example;
     boolean mExampleLoadComplete = false;
     boolean mExampleBlockOutput = false;
+    boolean mExampleTreatOutput = false;
     Context mContext;
     MainActivity mMyActivity;
 
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     Operation [] operations;
     String mDisplay = "";
 
+    int characterLeft = 0, characterRight = 0, characterTop = 0, characterBottom = 0;
+
     private Canvas mCanvas;
 
     private InnerView view;
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     int marginTop = 5, marginBottom = 5, marginLeft = 5, marginRight = 5;
 
     public static final int ONE_SIDE = 28;
+    public int RULE_POSITION = 18; //22
     Paint mPaint = new Paint();
 
     @Override
@@ -46,13 +50,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         view = new InnerView(this);
 
-
-
         FrameLayout screenLoc = (FrameLayout) findViewById(R.id.innerView);
         screenLoc.addView(view);
         //screenLoc.addView(new InnerView(this));
-
-
 
 
         mContext = this;
@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
                         type = Operation.EVAL_SINGLE_ALPHA_LOWER;
                         break;
                 }
+
             }
         });
 
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         mDisplay = mDisplay + in;
         TextView mOutput = (TextView) findViewById(R.id.textView);
         mOutput.setText(mDisplay);
-        System.out.println("setOutput " + mDisplay);
+        //System.out.println("setOutput " + mDisplay);
     }
 
     public void clearScreen() {
@@ -188,6 +189,78 @@ public class MainActivity extends AppCompatActivity {
         }
         view.invalidate();
     }
+
+    public void examineScreen() {
+        characterLeft = characterTop = 28;
+        characterRight = characterBottom = 0;
+        for (int i = 0; i < 28; i ++ ) {
+            for (int j = 0; j < 28; j ++ ) {
+                if(screen[i][j] >= 0.5d) {
+                    if (i < characterTop) { characterTop = i;}
+                    if (j < characterLeft) {characterLeft = j;}
+                    if (j > characterRight) {characterRight = j;}
+                    if (i > characterBottom) {characterBottom = i;}
+                }
+            }
+        }
+
+    }
+
+    public void resize() {
+
+        double[][] screenOut = new double[ONE_SIDE][ONE_SIDE];
+
+        float mag =  (characterBottom - characterTop)/(float) (RULE_POSITION - 1);
+        int mLeftMove =(int) ((characterLeft + ( ONE_SIDE - characterRight)) /2.0f) - characterLeft;
+
+        if(type == Operation.EVAL_SINGLE_ALPHA_UPPER  ) {
+
+            if (mag >= 1.0f) mag = 1.0f;
+
+            for (int i = 0; i < 28; i++) {
+                for (int j = 0; j < 28; j++) {
+
+                    int yy = (int) (i * mag + characterTop);
+                    int xx = mLeftMove + j;
+
+                    if (yy >= 0 && yy < ONE_SIDE && xx < ONE_SIDE && xx >= 0 && screen[yy][j] >= 0.5d) {
+                        screenOut[i][xx] = 1.0d;
+                    }
+                }
+            }
+            screen = screenOut;
+        }
+        if (type == Operation.EVAL_SINGLE_ALPHA_LOWER) {
+
+            int ii = 0;
+            mag = 1.0f;
+
+            if ( characterBottom < RULE_POSITION ) {
+
+                ii = (characterTop + ( RULE_POSITION - characterBottom));
+            }
+            else {
+                ii = characterTop;
+            }
+
+            for (int i = 0; i < 28; i++) {
+                for (int j = 0; j < 28; j++) {
+
+                    int yy = (int) (i * mag + characterTop);
+                    int xx = mLeftMove + j;
+
+                    if (yy >= 0 && yy < ONE_SIDE && xx < ONE_SIDE &&
+                            xx >= 0 && i + ii < ONE_SIDE && i + ii >= 0 && screen[yy][j] >= 0.5d) {
+                        screenOut[i+ii][xx] = 1.0d;
+                    }
+                }
+            }
+            screen = screenOut;
+        }
+
+
+    }
+
 
     class InnerView extends View {
 
@@ -205,9 +278,10 @@ public class MainActivity extends AppCompatActivity {
             float xx = (mWidth - (marginLeft+marginRight)) / (float) ONE_SIDE;
             float yy = (mHeight - (marginTop+marginBottom)) /(float) ONE_SIDE;
 
-            //g.setColor(Color.BLACK);
-            //g.fillRect(0, this.getHeight() - 2, this.getWidth(), 2);
-
+            if(type == Operation.EVAL_SINGLE_ALPHA_LOWER) {
+                mPaint.setColor(Color.BLUE);
+                canvas.drawRect(0, yy * RULE_POSITION, mWidth, (yy * RULE_POSITION) + 2, mPaint);
+            }
 
             for (int i = 0; i < 28; i++) {
                 for (int j = 0; j < 28; j++) {
@@ -289,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
                 example.setNetworks();
             }
             catch (Exception e) {
-                Log.e("mainactivity","optionsloader");
+
                 e.printStackTrace();
             }
             return null;
@@ -310,6 +384,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             mExampleBlockOutput = true;
+            if (mExampleTreatOutput) {
+                examineScreen();
+                resize();
+            }
             super.onPreExecute();
         }
 
@@ -321,34 +399,25 @@ public class MainActivity extends AppCompatActivity {
             if(mExampleLoadComplete) {
                 if (operations != null && operations.length == 3) {
                     try {
-                        //mExampleReadyForInput = false; // we don't know how long this will take...
 
                         switch (type) {
                             case Operation.EVAL_SINGLE_ALPHA_LOWER:
-                                //mDisplay = "lower ";
-                                //mOutput.setText(mDisplay);
 
                                 operations[0].startOperation(getScreen());
                                 mOutput = (operations[0].getOutput());
                                 break;
                             case Operation.EVAL_SINGLE_ALPHA_UPPER:
-                                //mDisplay = "upper ";
-                                //mOutput.setText(mDisplay);
 
-                                //mOutput.setText(mDisplay);
                                 operations[1].startOperation(getScreen());
                                 mOutput = (operations[1].getOutput());
                                 break;
                             case Operation.EVAL_SINGLE_NUMERIC:
-                                //mDisplay = "digits ";
-                                //mOutput.setText(mDisplay);
 
                                 operations[2].startOperation(getScreen());
                                 mOutput = (operations[2].getOutput());
                                 break;
                         }
-                        //mExampleReadyForInput = true;
-                        clearScreen();
+                        //clearScreen();
 
                     } catch (Exception p) {
                         p.printStackTrace();
@@ -363,6 +432,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String in) {
             setOutput(in);
+            clearScreen();
             mExampleBlockOutput = false;
             super.onPostExecute(in);
         }
