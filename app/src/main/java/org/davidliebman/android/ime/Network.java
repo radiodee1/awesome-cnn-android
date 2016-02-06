@@ -37,6 +37,7 @@ public class Network {
     public Network(int num ) {
         setOutputNum(num);
 
+        /*
         String key1 = "com.github.fommil.netlib.BLAS";
         String prop1 = "com.github.fommil.netlib.F2jBLAS";
 
@@ -51,7 +52,7 @@ public class Network {
         System.setProperty(key3, prop3);
 
         System.setProperty("org.nd4j.linalg.cpu.force_native","false");
-
+        */
         buildNetwork();
     }
 

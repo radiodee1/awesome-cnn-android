@@ -5,6 +5,7 @@ package org.davidliebman.android.ime;
  */
 
         import android.content.Context;
+        import android.util.Log;
 
         import org.deeplearning4j.datasets.iterator.impl.MnistDataSetIterator;
         import org.deeplearning4j.eval.Evaluation;
@@ -72,13 +73,16 @@ public class Example {
         String key3 = "com.github.fommil.netlib.ARPACK";
         String prop3 = "com.github.fommil.netlib.F2jARPACK";
 
+
         System.setProperty(key1, prop1);
         System.setProperty(key2, prop2);
         System.setProperty(key3, prop3);
 
         System.setProperty("org.nd4j.linalg.cpu.force_native","false");
-        //System.out.println("setprop "+res);
+
         Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
+
+
     }
     public void setNetworks() throws Exception{
 

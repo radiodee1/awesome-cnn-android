@@ -231,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
                 screen[i][j] = 0.0d;
             }
         }
+        view.invalidate();
     }
 
     class InnerView extends View {
