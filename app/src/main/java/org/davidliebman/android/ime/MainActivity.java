@@ -6,10 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,14 +14,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     Example example;
     boolean mExampleLoadComplete = false;
-    boolean mExampleReadyForInput = true;
+    boolean mExampleBlockOutput = false;
     Context mContext;
     MainActivity mMyActivity;
 
@@ -85,46 +81,14 @@ public class MainActivity extends AppCompatActivity {
         mRightAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView mOutput = (TextView) findViewById(R.id.textView);
 
-                if(mExampleLoadComplete) {
-                    if (operations != null && operations.length == 3) {
-                        try {
-                            mExampleReadyForInput = false; // we don't know how long this will take...
 
-                            switch (type) {
-                                case Operation.EVAL_SINGLE_ALPHA_LOWER:
-                                    mDisplay = "lower ";
-                                    mOutput.setText(mDisplay);
-
-                                    operations[0].startOperation(getScreen());
-                                    setOutput(operations[0].getOutput());
-                                    break;
-                                case Operation.EVAL_SINGLE_ALPHA_UPPER:
-                                    mDisplay = "upper ";
-                                    mOutput.setText(mDisplay);
-
-                                    mOutput.setText(mDisplay);
-                                    operations[1].startOperation(getScreen());
-                                    setOutput(operations[1].getOutput());
-                                    break;
-                                case Operation.EVAL_SINGLE_NUMERIC:
-                                    mDisplay = "digits ";
-                                    mOutput.setText(mDisplay);
-
-                                    operations[2].startOperation(getScreen());
-                                    setOutput(operations[2].getOutput());
-                                    break;
-                            }
-                            mExampleReadyForInput = true;
-                            clearScreen();
-
-                        } catch (Exception p) {
-                            p.printStackTrace();
-                        }
-                    }
+                if (!mExampleBlockOutput) {
+                    new OperationSingle().execute(0);
+                    //mOutput.setText(mDisplay);
                 }
             }
+
         });
 
         final Button mWriteErase = (Button) findViewById(R.id.writeErase);
@@ -223,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
         mDisplay = mDisplay + in;
         TextView mOutput = (TextView) findViewById(R.id.textView);
         mOutput.setText(mDisplay);
+        System.out.println("setOutput " + mDisplay);
     }
 
     public void clearScreen() {
@@ -280,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onTouchEvent(MotionEvent event) {
 
-            if(!mExampleReadyForInput) return true;
+            if(mExampleBlockOutput) return true;
 
             int sizex = mWidth - (marginRight + marginLeft);
             int sizey = mHeight - (marginTop + marginBottom);
@@ -347,6 +312,69 @@ public class MainActivity extends AppCompatActivity {
             TextView mOutput = (TextView) findViewById(R.id.textView);
             mOutput.setText(mDisplay);
             super.onPostExecute(integer);
+        }
+    }
+
+    class OperationSingle extends AsyncTask<Integer, Integer, String> {
+
+        @Override
+        protected void onPreExecute() {
+            mExampleBlockOutput = true;
+            super.onPreExecute();
+        }
+
+
+
+        @Override
+        protected String doInBackground(Integer... params) {
+            String mOutput = "";
+            if(mExampleLoadComplete) {
+                if (operations != null && operations.length == 3) {
+                    try {
+                        //mExampleReadyForInput = false; // we don't know how long this will take...
+
+                        switch (type) {
+                            case Operation.EVAL_SINGLE_ALPHA_LOWER:
+                                //mDisplay = "lower ";
+                                //mOutput.setText(mDisplay);
+
+                                operations[0].startOperation(getScreen());
+                                mOutput = (operations[0].getOutput());
+                                break;
+                            case Operation.EVAL_SINGLE_ALPHA_UPPER:
+                                //mDisplay = "upper ";
+                                //mOutput.setText(mDisplay);
+
+                                //mOutput.setText(mDisplay);
+                                operations[1].startOperation(getScreen());
+                                mOutput = (operations[1].getOutput());
+                                break;
+                            case Operation.EVAL_SINGLE_NUMERIC:
+                                //mDisplay = "digits ";
+                                //mOutput.setText(mDisplay);
+
+                                operations[2].startOperation(getScreen());
+                                mOutput = (operations[2].getOutput());
+                                break;
+                        }
+                        //mExampleReadyForInput = true;
+                        clearScreen();
+
+                    } catch (Exception p) {
+                        p.printStackTrace();
+                    }
+                }
+            }
+
+
+            return mOutput;
+        }
+
+        @Override
+        protected void onPostExecute(String in) {
+            setOutput(in);
+            mExampleBlockOutput = false;
+            super.onPostExecute(in);
         }
     }
 }

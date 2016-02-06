@@ -40,7 +40,7 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="BACKSPACE"
+                    android:text="BACK"
                     android:id="@+id/leftErase" />
 
                 <Button
@@ -67,14 +67,14 @@
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="C-LEFT"
+                    android:text="&lt;&lt;----"
                     android:id="@+id/leftCursor" />
 
                 <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="C-RIGHT"
+                    android:text="---->>"
                     android:id="@+id/rightCursor" />
 
                 <Button
