@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         final FrameLayout.LayoutParams lp2 = (FrameLayout.LayoutParams) view.getLayoutParams();
         lp2.width = mWindowWidth/2;
+        //lp2.gravity = Gravity.CENTER_HORIZONTAL;
         view.setLayoutParams(lp2);
 
         mContext = this;
