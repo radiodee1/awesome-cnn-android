@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         setWindowDimensions();
 
+        this.setTheme(R.style.AppTheme_Custom);
         view = new InnerView(this);
 
         FrameLayout screenLoc = (FrameLayout) findViewById(R.id.innerView);
