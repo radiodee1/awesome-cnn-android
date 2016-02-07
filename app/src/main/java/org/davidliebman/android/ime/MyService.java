@@ -4,31 +4,28 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.inputmethodservice.InputMethodService;
+import android.inputmethodservice.KeyboardView;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements CNNEditor {
+public class MyService extends InputMethodService implements CNNEditor {
 
     Example example;
     boolean mExampleLoadComplete = false;
     boolean mExampleBlockOutput = false;
     boolean mExampleTreatOutput = false;
     Context mContext;
-    MainActivity mMyActivity;
+    MyService mMyService;
+    View mMyServiceView;
 
     double[][] screen = new double[28][28];
     boolean write = true;
@@ -52,21 +49,29 @@ public class MainActivity extends AppCompatActivity implements CNNEditor {
     int mWindowHeight, mWindowWidth;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public View onCreateInputView() {
 
-        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+        KeyboardView inputView =
+                (KeyboardView) getLayoutInflater().inflate( R.layout.activity_main, null);
 
-        super.onCreate(savedInstanceState);
+        //super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
 
 
         setWindowDimensions();
 
+        final WindowManager.LayoutParams lp = (WindowManager.LayoutParams) inputView.getLayoutParams();
+
+        lp.gravity = Gravity.BOTTOM;
+        lp.width = mWindowWidth;
+        lp.height = mWindowHeight / 2;
+        inputView.setLayoutParams(lp);
+
         //this.setTheme(R.style.AppTheme_Custom);
         view = new InnerView(this);
 
-        FrameLayout screenLoc = (FrameLayout) findViewById(R.id.innerView);
+        FrameLayout screenLoc = (FrameLayout) inputView.findViewById(R.id.innerView);
         screenLoc.addView(view);
 
 
@@ -76,7 +81,8 @@ public class MainActivity extends AppCompatActivity implements CNNEditor {
         view.setLayoutParams(lp2);
 
         mContext = this;
-        mMyActivity = this;
+        mMyService = this;
+        mMyServiceView = inputView;
         try {
             example = new Example(this, this);
         }
@@ -86,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements CNNEditor {
         new ExampleInstantiate().execute(0);
 
 
-        Button mRightAccept = (Button) findViewById(R.id.rightAccept);
+        Button mRightAccept = (Button) inputView.findViewById(R.id.rightAccept);
         mRightAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements CNNEditor {
 
         });
 
-        final Button mWriteErase = (Button) findViewById(R.id.writeErase);
+        final Button mWriteErase = (Button) inputView.findViewById(R.id.writeErase);
         mWriteErase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements CNNEditor {
             }
         });
 
-        final Button mToggle = (Button) findViewById(R.id.toggle);
+        final Button mToggle = (Button) inputView.findViewById(R.id.toggle);
         mToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements CNNEditor {
             }
         });
 
-        Button mLeftErase = (Button) findViewById(R.id.leftErase);
+        Button mLeftErase = (Button) inputView.findViewById(R.id.leftErase);
         mLeftErase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,32 +157,24 @@ public class MainActivity extends AppCompatActivity implements CNNEditor {
                 mExampleBlockOutput = false;
             }
         });
+
+        return inputView;
     }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        final View mView = getWindow().getDecorView();
+
+    public void attachAtBottom(View mView) {
+        //super.onAttachedToWindow();
+        //final View mView = getWindow().getDecorView();
         final WindowManager.LayoutParams lp = (WindowManager.LayoutParams) mView.getLayoutParams();
 
         lp.gravity = Gravity.BOTTOM;
         lp.width = mWindowWidth;
         lp.height = mWindowHeight / 2;
-
-        getWindowManager().updateViewLayout(mView,lp);
+        mView.setLayoutParams(lp);
+        //getWindowManager().updateViewLayout(mView,lp);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
 
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
     @Override
     public void addOperations ( Operation op1, Operation op2, Operation op3) {
@@ -184,33 +182,15 @@ public class MainActivity extends AppCompatActivity implements CNNEditor {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
-    }
 
     public double [][] getScreen() { return screen ; }
 
     public void setOutput( String in ) {
         mDisplay = mDisplay + in;
-        TextView mOutput = (TextView) findViewById(R.id.textView);
+        TextView mOutput = (TextView) mMyServiceView.findViewById(R.id.textView);
         mOutput.setText(mDisplay);
         //System.out.println("setOutput " + mDisplay);
     }
@@ -415,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements CNNEditor {
         protected void onPostExecute(Integer integer) {
             mExampleLoadComplete = true;
             mDisplay = "output ready: ";
-            TextView mOutput = (TextView) findViewById(R.id.textView);
+            TextView mOutput = (TextView) mMyServiceView.findViewById(R.id.textView);
             mOutput.setText(mDisplay);
             super.onPostExecute(integer);
         }

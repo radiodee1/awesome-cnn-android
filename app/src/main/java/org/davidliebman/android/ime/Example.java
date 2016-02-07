@@ -49,11 +49,11 @@ public class Example {
     int iterations = 1; //10
     int nEpochs = 1;
 
-    MainActivity editor;
+    CNNEditor editor;
 
     Context mContext ;
 
-    public Example ( Context c , MainActivity editor ) throws Exception {
+    public Example ( Context c , CNNEditor editor ) throws Exception {
 
         mContext = c;
 
