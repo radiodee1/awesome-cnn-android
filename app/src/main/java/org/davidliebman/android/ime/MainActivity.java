@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -60,8 +61,11 @@ public class MainActivity extends AppCompatActivity {
 
         FrameLayout screenLoc = (FrameLayout) findViewById(R.id.innerView);
         screenLoc.addView(view);
-        //screenLoc.addView(new InnerView(this));
 
+
+        final FrameLayout.LayoutParams lp2 = (FrameLayout.LayoutParams) view.getLayoutParams();
+        lp2.width = mWindowWidth/2;
+        view.setLayoutParams(lp2);
 
         mContext = this;
         mMyActivity = this;
