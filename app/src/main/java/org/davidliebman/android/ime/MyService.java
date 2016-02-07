@@ -1,23 +1,30 @@
 package org.davidliebman.android.ime;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.KeyboardView;
 import android.os.AsyncTask;
+import android.text.InputType;
+import android.text.Layout;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MyService extends InputMethodService implements CNNEditor {
+public class MyService extends InputMethodService implements CNNEditor, KeyboardView.OnKeyboardActionListener {
 
     Example example;
     boolean mExampleLoadComplete = false;
@@ -51,19 +58,21 @@ public class MyService extends InputMethodService implements CNNEditor {
     @Override
     public View onCreateInputView() {
 
-        KeyboardView inputView =
-                (KeyboardView) getLayoutInflater().inflate( R.layout.activity_main, null);
+        Log.e("ime","before layout");
+        KeyboardView inputView = (KeyboardView) getLayoutInflater().inflate( R.layout.activity_main, null, true);
 
         //super.onCreate(savedInstanceState);
 
         //setContentView(R.layout.activity_main);
+        inputView.setOnKeyboardActionListener(this);
 
 
         setWindowDimensions();
 
-        final WindowManager.LayoutParams lp = (WindowManager.LayoutParams) inputView.getLayoutParams();
+        final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) inputView.getLayoutParams();
 
-        lp.gravity = Gravity.BOTTOM;
+        //lp.gravity = Gravity.BOTTOM;
+
         lp.width = mWindowWidth;
         lp.height = mWindowHeight / 2;
         inputView.setLayoutParams(lp);
@@ -162,6 +171,7 @@ public class MyService extends InputMethodService implements CNNEditor {
     }
 
 
+    /*
     public void attachAtBottom(View mView) {
         //super.onAttachedToWindow();
         //final View mView = getWindow().getDecorView();
@@ -173,8 +183,21 @@ public class MyService extends InputMethodService implements CNNEditor {
         mView.setLayoutParams(lp);
         //getWindowManager().updateViewLayout(mView,lp);
     }
+    */
 
 
+
+    @Override
+    public void onStartInputView(EditorInfo info, boolean restarting) {
+        int type = info.inputType & InputType.TYPE_CLASS_TEXT;
+        Log.e("ime "," type "+ type);
+        if (type == 27) {
+            //Intent i = new Intent(this, MyService.class);
+            //startActivity(i);
+        }
+
+        super.onStartInputView(info, restarting);
+    }
 
     @Override
     public void addOperations ( Operation op1, Operation op2, Operation op3) {
@@ -282,6 +305,46 @@ public class MyService extends InputMethodService implements CNNEditor {
         display.getMetrics(metrics);
         mWindowHeight = metrics.heightPixels;
         mWindowWidth = metrics.widthPixels;
+    }
+
+    @Override
+    public void onPress(int primaryCode) {
+
+    }
+
+    @Override
+    public void onRelease(int primaryCode) {
+
+    }
+
+    @Override
+    public void onKey(int primaryCode, int[] keyCodes) {
+
+    }
+
+    @Override
+    public void onText(CharSequence text) {
+
+    }
+
+    @Override
+    public void swipeLeft() {
+
+    }
+
+    @Override
+    public void swipeRight() {
+
+    }
+
+    @Override
+    public void swipeDown() {
+
+    }
+
+    @Override
+    public void swipeUp() {
+
     }
 
     class InnerView extends View {

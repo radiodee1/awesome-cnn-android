@@ -1,6 +1,7 @@
 package org.davidliebman.android.ime;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -85,6 +86,9 @@ public class MainActivity extends AppCompatActivity implements CNNEditor {
         }
         new ExampleInstantiate().execute(0);
 
+        //Intent ii = new Intent(this, MyService.class);
+        //startActivity(ii);
+        //startService(ii);
 
         Button mRightAccept = (Button) findViewById(R.id.rightAccept);
         mRightAccept.setOnClickListener(new View.OnClickListener() {
