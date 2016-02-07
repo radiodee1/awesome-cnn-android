@@ -6,9 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="org.davidliebman.android.ime.MainActivity"
-    android:id="@+id/coordinator"
-    android:theme="@style/AppTheme.Custom"
-    android:background="@android:color/transparent">
+    android:id="@+id/coordinator">
 
     <include layout="@layout/content_main" />
 

@@ -14,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -52,12 +53,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
 
         setWindowDimensions();
 
-        this.setTheme(R.style.AppTheme_Custom);
+        //this.setTheme(R.style.AppTheme_Custom);
         view = new InnerView(this);
 
         FrameLayout screenLoc = (FrameLayout) findViewById(R.id.innerView);
