@@ -58,10 +58,11 @@ public class MyService extends InputMethodService implements CNNEditor, Keyboard
     @Override
     public View onCreateInputView() {
 
-        Log.e("ime","before layout");
-        KeyboardView inputView = (KeyboardView) getLayoutInflater().inflate( R.layout.activity_main, null, true);
+        Log.e("ime", "before layout");
+        KeyboardView inputView = (KeyboardView) getLayoutInflater().inflate( R.layout.ime_main, null);
 
         //super.onCreate(savedInstanceState);
+        //KeyboardView mMyView = new KeyboardView(this,null);
 
         //setContentView(R.layout.activity_main);
         inputView.setOnKeyboardActionListener(this);
