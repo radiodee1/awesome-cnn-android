@@ -7,11 +7,14 @@ import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -37,17 +40,22 @@ public class MainActivity extends AppCompatActivity {
     private Canvas mCanvas;
 
     private InnerView view;
-    private int mHeight = 0, mWidth = 0;
+    private int mViewHeight = 0, mViewWidth = 0;
     int marginTop = 5, marginBottom = 5, marginLeft = 5, marginRight = 5;
 
     public static final int ONE_SIDE = 28;
     public int RULE_POSITION = 18; //22
     Paint mPaint = new Paint();
 
+    int mWindowHeight, mWindowWidth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setWindowDimensions();
+
         view = new InnerView(this);
 
         FrameLayout screenLoc = (FrameLayout) findViewById(R.id.innerView);
@@ -131,6 +139,19 @@ public class MainActivity extends AppCompatActivity {
                 mExampleBlockOutput = false;
             }
         });
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        final View mView = getWindow().getDecorView();
+        final WindowManager.LayoutParams lp = (WindowManager.LayoutParams) mView.getLayoutParams();
+
+        lp.gravity = Gravity.BOTTOM;
+        lp.width = mWindowWidth;
+        lp.height = mWindowHeight / 2;
+
+        getWindowManager().updateViewLayout(mView,lp);
     }
 
     @Override
@@ -261,6 +282,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void setWindowDimensions() {
+        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
+        mWindowHeight = metrics.heightPixels;
+        mWindowWidth = metrics.widthPixels;
+    }
 
     class InnerView extends View {
 
@@ -275,12 +304,12 @@ public class MainActivity extends AppCompatActivity {
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
 
-            float xx = (mWidth - (marginLeft+marginRight)) / (float) ONE_SIDE;
-            float yy = (mHeight - (marginTop+marginBottom)) /(float) ONE_SIDE;
+            float xx = (mViewWidth - (marginLeft+marginRight)) / (float) ONE_SIDE;
+            float yy = (mViewHeight - (marginTop+marginBottom)) /(float) ONE_SIDE;
 
             if(type == Operation.EVAL_SINGLE_ALPHA_LOWER) {
                 mPaint.setColor(Color.BLUE);
-                canvas.drawRect(0, yy * RULE_POSITION, mWidth, (yy * RULE_POSITION) + 2, mPaint);
+                canvas.drawRect(0, yy * RULE_POSITION, mViewWidth, (yy * RULE_POSITION) + 2, mPaint);
             }
 
             for (int i = 0; i < 28; i++) {
@@ -302,8 +331,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onSizeChanged(int w, int h, int oldw, int oldh) {
             super.onSizeChanged(w, h, oldw, oldh);
-            mWidth = w;
-            mHeight = h;
+            mViewWidth = w;
+            mViewHeight = h;
         }
 
         @Override
@@ -311,8 +340,8 @@ public class MainActivity extends AppCompatActivity {
 
             if(mExampleBlockOutput) return true;
 
-            int sizex = mWidth - (marginRight + marginLeft);
-            int sizey = mHeight - (marginTop + marginBottom);
+            int sizex = mViewWidth - (marginRight + marginLeft);
+            int sizey = mViewHeight - (marginTop + marginBottom);
 
             int xx = (int) event.getX() - marginLeft;
             int yy = (int) event.getY() - marginTop;
