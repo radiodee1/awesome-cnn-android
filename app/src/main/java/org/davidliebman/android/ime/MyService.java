@@ -17,10 +17,12 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -56,27 +58,27 @@ public class MyService extends InputMethodService implements CNNEditor, Keyboard
     int mWindowHeight, mWindowWidth;
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
     public View onCreateInputView() {
 
         Log.e("ime", "before layout");
-        KeyboardView inputView = (KeyboardView) getLayoutInflater().inflate( R.layout.ime_main, null);
-
-        //super.onCreate(savedInstanceState);
-        //KeyboardView mMyView = new KeyboardView(this,null);
-
-        //setContentView(R.layout.activity_main);
-        inputView.setOnKeyboardActionListener(this);
-
+        FrameLayout inputView = (FrameLayout) getLayoutInflater().inflate( R.layout.ime_main, null);
 
         setWindowDimensions();
 
-        final RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) inputView.getLayoutParams();
-
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mWindowHeight/2);
+        //(FrameLayout.LayoutParams) inputView.getLayoutParams();
+        LinearLayout topHalf = (LinearLayout)inputView.findViewById(R.id.topHalf);
+        topHalf.setLayoutParams(lp);
         //lp.gravity = Gravity.BOTTOM;
 
-        lp.width = mWindowWidth;
-        lp.height = mWindowHeight / 2;
-        inputView.setLayoutParams(lp);
+        //lp.width = mWindowWidth;
+        //lp.height = mWindowHeight / 2;
+        //inputView.setLayoutParams(lp);
 
         //this.setTheme(R.style.AppTheme_Custom);
         view = new InnerView(this);
