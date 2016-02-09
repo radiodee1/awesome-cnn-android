@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -49,7 +50,8 @@ public class MyService extends InputMethodService implements CNNEditor {
 
     int characterLeft = 0, characterRight = 0, characterTop = 0, characterBottom = 0;
 
-    private Canvas mCanvas;
+    //private Canvas mCanvas;
+    FrameLayout inputView;
 
     private InnerView view;
     private int mViewHeight = 0, mViewWidth = 0;
@@ -62,6 +64,8 @@ public class MyService extends InputMethodService implements CNNEditor {
     int mWindowHeight, mWindowWidth;
     //InputConnection mConnection;
 
+    Button mWriteErase, mToggle;
+    TextView mOutput;
 
     @Override
     public void onCreate() {
@@ -98,7 +102,7 @@ public class MyService extends InputMethodService implements CNNEditor {
     @Override
     public View onCreateInputView() {
 
-        FrameLayout inputView = (FrameLayout) getLayoutInflater().inflate( R.layout.ime_main, null);
+        inputView = (FrameLayout) getLayoutInflater().inflate( R.layout.ime_main, null);
 
         setWindowDimensions();
 
@@ -114,28 +118,29 @@ public class MyService extends InputMethodService implements CNNEditor {
         FrameLayout screenLoc = (FrameLayout) inputView.findViewById(R.id.innerView);
         screenLoc.addView(view);
 
-
-        int mWindowWidthTemp = 0;
-        int mWindowHeightTemp = 0;
         final FrameLayout.LayoutParams lp2 = (FrameLayout.LayoutParams) view.getLayoutParams();
 
 
-        lp2.width = mWindowWidth/2;
-        //lp2.gravity = Gravity.CENTER_HORIZONTAL;
-        view.setLayoutParams(lp2);
+        inputView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                inputView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 
-        /*
-        mWindowWidthTemp = view.getMeasuredWidth();
-        mWindowHeightTemp = view.getMeasuredHeight();
-        if (mWindowHeightTemp < mWindowWidthTemp && mWindowHeightTemp > 0) mWindowWidthTemp = mWindowHeightTemp;
+                int[] locations = new int[2];
+                view.getLocationOnScreen(locations);
+                int x = locations[0];
+                int y = locations[1];
+                lp2.height = mWindowHeight - y;
+                lp2.width = mWindowWidth/2;
 
-        FrameLayout.LayoutParams lp3 = (FrameLayout.LayoutParams) view.getLayoutParams();
-        lp3.width = mWindowWidthTemp;
-        lp3.height = mWindowHeightTemp;
-        view.setLayoutParams(lp3);
+                if ((mWindowHeight -y) * 1.25 < mWindowWidth / 2 ) {
+                    lp2.width = mWindowHeight -y ;
+                    //make it a square
+                }
+                view.setLayoutParams(lp2);
+            }
+        });
 
-        Log.e("ime", "height " + lp3.height);
-        */
+        //view.setLayoutParams(lp2);
 
         mContext = this;
         mMyService = this;
@@ -159,7 +164,7 @@ public class MyService extends InputMethodService implements CNNEditor {
 
         });
 
-        final Button mWriteErase = (Button) inputView.findViewById(R.id.writeErase);
+        mWriteErase = (Button) inputView.findViewById(R.id.writeErase);
         mWriteErase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,7 +181,7 @@ public class MyService extends InputMethodService implements CNNEditor {
             }
         });
 
-        final Button mToggle = (Button) inputView.findViewById(R.id.toggle);
+        mToggle = (Button) inputView.findViewById(R.id.toggle);
         mToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,10 +231,41 @@ public class MyService extends InputMethodService implements CNNEditor {
             if(mExampleLoadComplete) {
                 mDisplay = "";
             }
-            //Intent i = new Intent(this, MyService.class);
-            //startActivity(i);
-        }
 
+        }
+        try {
+            if (mToggle != null) {
+                switch (this.type) {
+                    case Operation.EVAL_SINGLE_ALPHA_UPPER:
+                        mToggle.setText("UPPER");
+                        break;
+                    case Operation.EVAL_SINGLE_NUMERIC:
+                        mToggle.setText("#NUM#");
+                        break;
+                    case Operation.EVAL_SINGLE_ALPHA_LOWER:
+                        mToggle.setText("lower");
+                        break;
+                    default:
+                        mToggle.setText("lower");
+                        break;
+                }
+            }
+            if (mWriteErase != null) {
+                if (!write) {
+                    mWriteErase.setText("ERASE");
+                    //System.out.println("erase");
+                }
+                else {
+                    mWriteErase.setText("WRITE");
+                    //System.out.println("write");
+                }
+            }
+            mOutput = (TextView) inputView.findViewById(R.id.textView);
+            mOutput.setText(mDisplay);
+        }
+        catch (Exception e) {
+
+        }
         super.onStartInputView(info, restarting);
     }
 
@@ -237,9 +273,6 @@ public class MyService extends InputMethodService implements CNNEditor {
     public void addOperations ( Operation op1, Operation op2, Operation op3) {
         operations = new Operation[] {op1,op2,op3};
     }
-
-
-
 
 
 
@@ -459,6 +492,12 @@ public class MyService extends InputMethodService implements CNNEditor {
     class ExampleInstantiate extends AsyncTask< Integer , Integer , Integer > {
 
         @Override
+        protected void onPreExecute() {
+            mExampleLoadComplete = false;
+            super.onPreExecute();
+        }
+
+        @Override
         protected Integer doInBackground(Integer... params) {
             try {
                 example.setNetworks();
@@ -502,24 +541,15 @@ public class MyService extends InputMethodService implements CNNEditor {
                 if (operations != null && operations.length == 3) {
                     try {
 
-                        switch (type) {
-                            case Operation.EVAL_SINGLE_ALPHA_LOWER:
-
-                                operations[0].startOperation(getScreen());
-                                mOutput = (operations[0].getOutput());
-                                break;
-                            case Operation.EVAL_SINGLE_ALPHA_UPPER:
-
-                                operations[1].startOperation(getScreen());
-                                mOutput = (operations[1].getOutput());
-                                break;
-                            case Operation.EVAL_SINGLE_NUMERIC:
-
-                                operations[2].startOperation(getScreen());
-                                mOutput = (operations[2].getOutput());
-                                break;
+                        //choose which neural network!!
+                        for (int i = 0; i < operations.length; i ++) {
+                            if (type == operations[i].getEvalType()) {
+                                operations[i].startOperation(getScreen());
+                                mOutput = operations[i].getOutput();
+                            }
                         }
-                        //clearScreen();
+
+
 
                     } catch (Exception p) {
                         p.printStackTrace();

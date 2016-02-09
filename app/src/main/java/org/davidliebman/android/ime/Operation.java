@@ -80,6 +80,7 @@ public class Operation {
     }
 
     public void setEvalType(int type) {evalType = type;}
+    public int getEvalType() {return evalType;}
 
     public void startOperation(double in [][]) throws Exception {
         singleInput = Nd4j.create(in).linearViewColumnOrder();
