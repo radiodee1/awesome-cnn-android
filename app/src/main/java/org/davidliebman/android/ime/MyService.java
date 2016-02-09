@@ -1,5 +1,6 @@
 package org.davidliebman.android.ime;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -25,6 +26,7 @@ import android.view.inputmethod.InputConnection;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -66,6 +68,7 @@ public class MyService extends InputMethodService implements CNNEditor {
 
     Button mWriteErase, mToggle;
     TextView mOutput;
+    private ProgressDialog progressBar;
 
     @Override
     public void onCreate() {
@@ -142,10 +145,20 @@ public class MyService extends InputMethodService implements CNNEditor {
 
         //view.setLayoutParams(lp2);
 
-        mContext = this;
+        mContext = this.getApplicationContext();
         mMyService = this;
         mMyServiceView = inputView;
 
+        /*
+        if (mContext != null) {
+            progressBar = new ProgressDialog(mContext);
+            progressBar.setMessage("IME Loading");
+
+            progressBar.setMax(10);
+            progressBar.show();
+            progressBar.setProgress(3);
+        }
+        */
 
         Button mRightAccept = (Button) inputView.findViewById(R.id.rightAccept);
         mRightAccept.setOnClickListener(new View.OnClickListener() {
@@ -226,7 +239,12 @@ public class MyService extends InputMethodService implements CNNEditor {
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
         int type = info.inputType & InputType.TYPE_CLASS_TEXT;
-        Log.e("ime ", " type " + type);
+
+        //progressBar = (ProgressBar) inputView.findViewById(R.id.progressBar);
+        //progressBar.setMax(10);
+
+        //if (mExampleLoadComplete) progressBar.setVisibility(View.GONE);
+
         if (type == 1) {
             if(mExampleLoadComplete) {
                 mDisplay = "";
@@ -494,11 +512,17 @@ public class MyService extends InputMethodService implements CNNEditor {
         @Override
         protected void onPreExecute() {
             mExampleLoadComplete = false;
+            mDisplay = "LOADING";
+            //progressBar.setVisibility(View.VISIBLE);
+
+
+
             super.onPreExecute();
         }
 
         @Override
         protected Integer doInBackground(Integer... params) {
+            //this.publishProgress(3);
             try {
                 example.setNetworks();
             }
@@ -506,16 +530,26 @@ public class MyService extends InputMethodService implements CNNEditor {
 
                 e.printStackTrace();
             }
+
             return null;
         }
 
         @Override
         protected void onPostExecute(Integer integer) {
             mExampleLoadComplete = true;
-            mDisplay = "output ready: ";
+            mDisplay = "";
             TextView mOutput = (TextView) mMyServiceView.findViewById(R.id.textView);
             mOutput.setText(mDisplay);
+            //if (progressBar != null) progressBar.hide();
             super.onPostExecute(integer);
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+
+            //if (progressBar != null) progressBar.setProgress(3);
+
+            super.onProgressUpdate(values);
         }
     }
 
