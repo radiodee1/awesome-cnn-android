@@ -71,7 +71,7 @@ public class Network {
                         .nOut(outputNum)
                         .activation("softmax")
                         .build())
-                .backprop(true).pretrain(false);
+                .backprop(true).pretrain(false); // pretrain false
         new ConvolutionLayerSetup(builder,28,28,1);
 
         MultiLayerConfiguration conf = builder.build();

@@ -3,15 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_alignParentBottom="true"
-    android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+    >
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:theme="@style/AppTheme">
 
         <LinearLayout
+            android:background="#00000000"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -26,7 +28,7 @@
             android:layout_height="match_parent"
             android:theme="@style/AppTheme"
             android:layout_gravity="bottom"
-            android:background="#ffffffff"/>
+            />
 
     </LinearLayout>
 

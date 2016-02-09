@@ -20,18 +20,22 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MyService extends InputMethodService implements CNNEditor, KeyboardView.OnKeyboardActionListener {
+public class MyService extends InputMethodService implements CNNEditor {
 
     Example example;
     boolean mExampleLoadComplete = false;
     boolean mExampleBlockOutput = false;
     boolean mExampleTreatOutput = false;
+    boolean mExampleNoCharacterPressed = false;
+    boolean mExampleNoBrush = false;
+    boolean mExampleInitInService = false;
     Context mContext;
     MyService mMyService;
     View mMyServiceView;
@@ -56,52 +60,86 @@ public class MyService extends InputMethodService implements CNNEditor, Keyboard
     Paint mPaint = new Paint();
 
     int mWindowHeight, mWindowWidth;
+    //InputConnection mConnection;
+
 
     @Override
     public void onCreate() {
+
         super.onCreate();
-    }
-
-    @Override
-    public View onCreateInputView() {
-
-        Log.e("ime", "before layout");
-        FrameLayout inputView = (FrameLayout) getLayoutInflater().inflate( R.layout.ime_main, null);
-
-        setWindowDimensions();
-
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mWindowHeight/2);
-        //(FrameLayout.LayoutParams) inputView.getLayoutParams();
-        LinearLayout topHalf = (LinearLayout)inputView.findViewById(R.id.topHalf);
-        topHalf.setLayoutParams(lp);
-        //lp.gravity = Gravity.BOTTOM;
-
-        //lp.width = mWindowWidth;
-        //lp.height = mWindowHeight / 2;
-        //inputView.setLayoutParams(lp);
-
-        //this.setTheme(R.style.AppTheme_Custom);
-        view = new InnerView(this);
-
-        FrameLayout screenLoc = (FrameLayout) inputView.findViewById(R.id.innerView);
-        screenLoc.addView(view);
-
-
-        final FrameLayout.LayoutParams lp2 = (FrameLayout.LayoutParams) view.getLayoutParams();
-        lp2.width = mWindowWidth/2;
-        //lp2.gravity = Gravity.CENTER_HORIZONTAL;
-        view.setLayoutParams(lp2);
-
-        mContext = this;
-        mMyService = this;
-        mMyServiceView = inputView;
         try {
             example = new Example(this, this);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
-        new ExampleInstantiate().execute(0);
+
+        if (!mExampleInitInService) {
+            new ExampleInstantiate().execute(0);
+        }
+        else {
+            try {
+                example.setNetworks();
+            }
+            catch (Exception e) {
+
+                e.printStackTrace();
+            }
+            mExampleLoadComplete = true;
+            mDisplay = "output ready: ";
+            //TextView mOutput = (TextView) mMyServiceView.findViewById(R.id.textView);
+            //mOutput.setText(mDisplay);
+        }
+
+
+        //mConnection = this.getCurrentInputConnection();
+    }
+
+    @Override
+    public View onCreateInputView() {
+
+        FrameLayout inputView = (FrameLayout) getLayoutInflater().inflate( R.layout.ime_main, null);
+
+        setWindowDimensions();
+
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mWindowHeight/2);
+        //(FrameLayout.LayoutParams) inputView.getLayoutParams();
+        LinearLayout topHalf = (LinearLayout)inputView.findViewById(R.id.topHalf);
+        topHalf.setLayoutParams(lp);
+
+        view = new InnerView(this);
+
+
+        FrameLayout screenLoc = (FrameLayout) inputView.findViewById(R.id.innerView);
+        screenLoc.addView(view);
+
+
+        int mWindowWidthTemp = 0;
+        int mWindowHeightTemp = 0;
+        final FrameLayout.LayoutParams lp2 = (FrameLayout.LayoutParams) view.getLayoutParams();
+
+
+        lp2.width = mWindowWidth/2;
+        //lp2.gravity = Gravity.CENTER_HORIZONTAL;
+        view.setLayoutParams(lp2);
+
+        /*
+        mWindowWidthTemp = view.getMeasuredWidth();
+        mWindowHeightTemp = view.getMeasuredHeight();
+        if (mWindowHeightTemp < mWindowWidthTemp && mWindowHeightTemp > 0) mWindowWidthTemp = mWindowHeightTemp;
+
+        FrameLayout.LayoutParams lp3 = (FrameLayout.LayoutParams) view.getLayoutParams();
+        lp3.width = mWindowWidthTemp;
+        lp3.height = mWindowHeightTemp;
+        view.setLayoutParams(lp3);
+
+        Log.e("ime", "height " + lp3.height);
+        */
+
+        mContext = this;
+        mMyService = this;
+        mMyServiceView = inputView;
 
 
         Button mRightAccept = (Button) inputView.findViewById(R.id.rightAccept);
@@ -110,9 +148,12 @@ public class MyService extends InputMethodService implements CNNEditor, Keyboard
             public void onClick(View v) {
 
 
-                if (!mExampleBlockOutput) {
+                if (!mExampleBlockOutput && !mExampleNoCharacterPressed) {
                     new OperationSingle().execute(0);
                     //mOutput.setText(mDisplay);
+                }
+                else {
+                    setOutput(" ");
                 }
             }
 
@@ -174,27 +215,17 @@ public class MyService extends InputMethodService implements CNNEditor, Keyboard
     }
 
 
-    /*
-    public void attachAtBottom(View mView) {
-        //super.onAttachedToWindow();
-        //final View mView = getWindow().getDecorView();
-        final WindowManager.LayoutParams lp = (WindowManager.LayoutParams) mView.getLayoutParams();
-
-        lp.gravity = Gravity.BOTTOM;
-        lp.width = mWindowWidth;
-        lp.height = mWindowHeight / 2;
-        mView.setLayoutParams(lp);
-        //getWindowManager().updateViewLayout(mView,lp);
-    }
-    */
 
 
 
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
         int type = info.inputType & InputType.TYPE_CLASS_TEXT;
-        Log.e("ime "," type "+ type);
-        if (type == 27) {
+        Log.e("ime ", " type " + type);
+        if (type == 1) {
+            if(mExampleLoadComplete) {
+                mDisplay = "";
+            }
             //Intent i = new Intent(this, MyService.class);
             //startActivity(i);
         }
@@ -215,6 +246,8 @@ public class MyService extends InputMethodService implements CNNEditor, Keyboard
     public double [][] getScreen() { return screen ; }
 
     public void setOutput( String in ) {
+        InputConnection mConnection = getCurrentInputConnection();
+        mConnection.commitText(in,1);
         mDisplay = mDisplay + in;
         TextView mOutput = (TextView) mMyServiceView.findViewById(R.id.textView);
         mOutput.setText(mDisplay);
@@ -231,11 +264,13 @@ public class MyService extends InputMethodService implements CNNEditor, Keyboard
     }
 
     public void examineScreen() {
+        mExampleNoCharacterPressed = true;
         characterLeft = characterTop = 28;
         characterRight = characterBottom = 0;
         for (int i = 0; i < 28; i ++ ) {
             for (int j = 0; j < 28; j ++ ) {
                 if(screen[i][j] >= 0.5d) {
+                    mExampleNoCharacterPressed = false;
                     if (i < characterTop) { characterTop = i;}
                     if (j < characterLeft) {characterLeft = j;}
                     if (j > characterRight) {characterRight = j;}
@@ -310,45 +345,6 @@ public class MyService extends InputMethodService implements CNNEditor, Keyboard
         mWindowWidth = metrics.widthPixels;
     }
 
-    @Override
-    public void onPress(int primaryCode) {
-
-    }
-
-    @Override
-    public void onRelease(int primaryCode) {
-
-    }
-
-    @Override
-    public void onKey(int primaryCode, int[] keyCodes) {
-
-    }
-
-    @Override
-    public void onText(CharSequence text) {
-
-    }
-
-    @Override
-    public void swipeLeft() {
-
-    }
-
-    @Override
-    public void swipeRight() {
-
-    }
-
-    @Override
-    public void swipeDown() {
-
-    }
-
-    @Override
-    public void swipeUp() {
-
-    }
 
     class InnerView extends View {
 
@@ -357,6 +353,11 @@ public class MyService extends InputMethodService implements CNNEditor, Keyboard
         public InnerView(Context c) {
             super(c);
 
+        }
+
+        @Override
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
 
         @Override
@@ -370,6 +371,9 @@ public class MyService extends InputMethodService implements CNNEditor, Keyboard
                 mPaint.setColor(Color.BLUE);
                 canvas.drawRect(0, yy * RULE_POSITION, mViewWidth, (yy * RULE_POSITION) + 2, mPaint);
             }
+
+            mPaint.setColor(Color.LTGRAY);
+            canvas.drawRect(0,0,mViewWidth,mViewHeight,mPaint);
 
             for (int i = 0; i < 28; i++) {
                 for (int j = 0; j < 28; j++) {
@@ -427,8 +431,12 @@ public class MyService extends InputMethodService implements CNNEditor, Keyboard
         }
 
         public  void brushScreen(int x, int y) {
-            for (int i = y - 1; i <= y + 1; i ++) {
-                for (int j = x - 1; j <= x + 1; j ++) {
+            if(mExampleNoBrush) {
+                screen[y][x] = 1.0d;
+                return;
+            }
+            for (int i = y - 1; i < y + 1; i ++) {
+                for (int j = x - 1; j < x + 1; j ++) {
                     if (i >= 0 && i < 28 && j >= 0 && j < 28) {
                         if (write) {
                             screen[i][j] = 1.0d;
@@ -472,8 +480,9 @@ public class MyService extends InputMethodService implements CNNEditor, Keyboard
         @Override
         protected void onPreExecute() {
             mExampleBlockOutput = true;
+            examineScreen();
+
             if (mExampleTreatOutput) {
-                examineScreen();
                 resize();
             }
             super.onPreExecute();

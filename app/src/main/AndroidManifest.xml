@@ -6,7 +6,9 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name">
-        <activity
+
+        <!--
+        activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.Custom">
             <intent-filter>
@@ -14,20 +16,33 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity
+        -->
 
         <service
-            android:name="org.davidliebman.android.ime.MyService"
-            android:label="CNN IME"
+            android:name=".MyService"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.BIND_INPUT_METHOD">
+            android:isolatedProcess="false"
+            android:label="CNN IME"
+            android:permission="android.permission.BIND_INPUT_METHOD"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
-            <meta-data android:name="android.view.im" android:resource="@xml/model"/>
 
+            <meta-data
+                android:name="android.view.im"
+                android:resource="@xml/model" />
         </service>
+
+        <activity android:name=".NewMainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
