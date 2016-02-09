@@ -36,7 +36,8 @@
                 android:resource="@xml/model" />
         </service>
 
-        <activity android:name=".NewMainActivity">
+        <activity android:name=".NewMainActivity"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

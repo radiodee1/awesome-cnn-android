@@ -346,9 +346,11 @@ public class MyService extends InputMethodService implements CNNEditor {
     }
 
 
+    public void setScreen(double [][] in) {screen = in;}
+
     class InnerView extends View {
 
-
+        double [][] viewScreen = new double[ONE_SIDE][ONE_SIDE];
 
         public InnerView(Context c) {
             super(c);
@@ -377,7 +379,7 @@ public class MyService extends InputMethodService implements CNNEditor {
 
             for (int i = 0; i < 28; i++) {
                 for (int j = 0; j < 28; j++) {
-                    if (screen[j][i] > 0.5d) {
+                    if (viewScreen[j][i] > 0.5d) {
 
                         int xpos = (int) (i * xx) + marginLeft;
                         int ypos = (int) (j * yy) + marginTop;
@@ -418,7 +420,10 @@ public class MyService extends InputMethodService implements CNNEditor {
 
                     brushScreen(posx,posy);
 
+
                     invalidate();
+
+                    setScreen(viewScreen);
 
                     break;
                 case MotionEvent.ACTION_UP:
@@ -432,18 +437,18 @@ public class MyService extends InputMethodService implements CNNEditor {
 
         public  void brushScreen(int x, int y) {
             if(mExampleNoBrush) {
-                screen[y][x] = 1.0d;
+                viewScreen[y][x] = 1.0d;
                 return;
             }
             for (int i = y - 1; i < y + 1; i ++) {
                 for (int j = x - 1; j < x + 1; j ++) {
                     if (i >= 0 && i < 28 && j >= 0 && j < 28) {
                         if (write) {
-                            screen[i][j] = 1.0d;
+                            viewScreen[i][j] = 1.0d;
                             //Log.e("color","color");
                         }
                         else {
-                            screen[i][j] = 0.0d;
+                            viewScreen[i][j] = 0.0d;
                         }
                     }
                 }
