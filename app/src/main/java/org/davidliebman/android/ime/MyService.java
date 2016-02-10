@@ -15,6 +15,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -226,8 +228,21 @@ public class MyService extends InputMethodService implements CNNEditor {
             public void onClick(View v) {
                 clearScreen();
                 mExampleBlockOutput = false;
+                //setOutput(Character.toString((char) KeyEvent.KEYCODE_DEL));
+                setOutput(KeyEvent.KEYCODE_DEL);
             }
         });
+
+
+        Button mRightCursor = (Button) inputView.findViewById(R.id.rightCursor);
+        mRightCursor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setOutput(KeyEvent.KEYCODE_CTRL_RIGHT);
+            }
+        });
+
+
 
         return inputView;
     }
@@ -295,6 +310,26 @@ public class MyService extends InputMethodService implements CNNEditor {
 
 
     public double [][] getScreen() { return screen ; }
+
+    public void setOutput(int in) {
+        InputConnection mConnection = getCurrentInputConnection();
+        try {
+
+            switch (in) {
+                case KeyEvent.KEYCODE_DEL:
+                    mConnection.deleteSurroundingText(1,0);
+                    break;
+                default:
+                    setOutput(String.valueOf(in));
+
+                    break;
+            }
+
+        }
+        catch (Exception e) {e.printStackTrace();}
+
+        Log.e("ime","keycode " +in);
+    }
 
     public void setOutput( String in ) {
         InputConnection mConnection = getCurrentInputConnection();
