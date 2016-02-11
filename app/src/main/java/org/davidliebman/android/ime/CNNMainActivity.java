@@ -3,7 +3,7 @@ package org.davidliebman.android.ime;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class NewMainActivity extends AppCompatActivity {
+public class CNNMainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

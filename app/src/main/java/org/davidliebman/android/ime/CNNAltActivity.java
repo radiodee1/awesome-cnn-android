@@ -1,7 +1,6 @@
 package org.davidliebman.android.ime;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,21 +14,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements CNNEditor {
+public class CNNAltActivity extends AppCompatActivity implements CNNEditor {
 
     Example example;
     boolean mExampleLoadComplete = false;
     boolean mExampleBlockOutput = false;
     boolean mExampleTreatOutput = false;
     Context mContext;
-    MainActivity mMyActivity;
+    CNNAltActivity mMyActivity;
 
     double[][] screen = new double[28][28];
     boolean write = true;

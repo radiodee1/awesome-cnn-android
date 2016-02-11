@@ -16,9 +16,9 @@ public class CNNInnerView extends View {
 
     Paint mPaint = new Paint();
     CNNValues val;
-    MyService service;
+    CNNService service;
 
-    public CNNInnerView(Context c, CNNValues v, MyService s) {
+    public CNNInnerView(Context c, CNNValues v, CNNService s) {
         super(c);
         val = v;
         service = s;

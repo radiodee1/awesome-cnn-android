@@ -33,13 +33,13 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class MyService extends InputMethodService implements CNNEditor {
+public class CNNService extends InputMethodService implements CNNEditor {
 
     Example example;
 
 
     Context mContext;
-    MyService mMyService;
+    CNNService mMyService;
     View mMyServiceView;
 
     CNNValues val = new CNNValues();
