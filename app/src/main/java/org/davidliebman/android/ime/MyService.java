@@ -36,19 +36,17 @@ import android.widget.TextView;
 public class MyService extends InputMethodService implements CNNEditor {
 
     Example example;
-    boolean mExampleLoadComplete = false;
-    boolean mExampleBlockOutput = false;
-    boolean mExampleTreatOutput = false;
-    boolean mExampleNoCharacterPressed = false;
-    boolean mExampleNoBrush = false;
-    boolean mExampleInitInService = false;
+
+
     Context mContext;
     MyService mMyService;
     View mMyServiceView;
 
+    final static CNNValues val = new CNNValues();
+
     double[][] screen = new double[28][28];
     boolean write = true;
-    int type = Operation.EVAL_SINGLE_ALPHA_UPPER;
+    //int type = Operation.EVAL_SINGLE_ALPHA_UPPER;
 
     Operation [] operations;
     String mDisplay = "";
@@ -58,20 +56,13 @@ public class MyService extends InputMethodService implements CNNEditor {
     //private Canvas mCanvas;
     FrameLayout inputView;
 
-    private InnerView view;
-    private int mViewHeight = 0, mViewWidth = 0;
-    int marginTop = 5, marginBottom = 5, marginLeft = 5, marginRight = 5;
+    private CNNInnerView view;
 
-    public static final int ONE_SIDE = 28;
-    public int RULE_POSITION = 18; //22
-    Paint mPaint = new Paint();
 
-    int mWindowHeight, mWindowWidth;
     //InputConnection mConnection;
 
     Button mWriteErase, mToggle;
     TextView mOutput;
-    private ProgressDialog progressBar;
 
     @Override
     public void onCreate() {
@@ -84,7 +75,7 @@ public class MyService extends InputMethodService implements CNNEditor {
             e.printStackTrace();
         }
 
-        if (!mExampleInitInService) {
+        if (!val.mExampleInitInService) {
             new ExampleInstantiate().execute(0);
         }
         else {
@@ -95,7 +86,7 @@ public class MyService extends InputMethodService implements CNNEditor {
 
                 e.printStackTrace();
             }
-            mExampleLoadComplete = true;
+            val.mExampleLoadComplete = true;
             mDisplay = "output ready: ";
             //TextView mOutput = (TextView) mMyServiceView.findViewById(R.id.textView);
             //mOutput.setText(mDisplay);
@@ -113,12 +104,12 @@ public class MyService extends InputMethodService implements CNNEditor {
         setWindowDimensions();
 
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mWindowHeight/2);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, val.mWindowHeight/2);
         //(FrameLayout.LayoutParams) inputView.getLayoutParams();
         LinearLayout topHalf = (LinearLayout)inputView.findViewById(R.id.topHalf);
         topHalf.setLayoutParams(lp);
 
-        view = new InnerView(this);
+        view = new CNNInnerView(this,val ,this );
 
 
         FrameLayout screenLoc = (FrameLayout) inputView.findViewById(R.id.innerView);
@@ -135,11 +126,11 @@ public class MyService extends InputMethodService implements CNNEditor {
                 view.getLocationOnScreen(locations);
                 int x = locations[0];
                 int y = locations[1];
-                lp2.height = mWindowHeight - y;
-                lp2.width = mWindowWidth/2;
+                lp2.height = val.mWindowHeight - y;
+                lp2.width = val.mWindowWidth/2;
 
-                if ((mWindowHeight -y) * 1.25 < mWindowWidth / 2 ) {
-                    lp2.width = mWindowHeight -y ;
+                if ((val.mWindowHeight -y) * 1.25 < val.mWindowWidth / 2 ) {
+                    lp2.width = val.mWindowHeight -y ;
                     //make it a square
                 }
                 view.setLayoutParams(lp2);
@@ -152,16 +143,7 @@ public class MyService extends InputMethodService implements CNNEditor {
         mMyService = this;
         mMyServiceView = inputView;
 
-        /*
-        if (mContext != null) {
-            progressBar = new ProgressDialog(mContext);
-            progressBar.setMessage("IME Loading");
 
-            progressBar.setMax(10);
-            progressBar.show();
-            progressBar.setProgress(3);
-        }
-        */
 
         Button mRightAccept = (Button) inputView.findViewById(R.id.rightAccept);
         mRightAccept.setOnClickListener(new View.OnClickListener() {
@@ -169,9 +151,9 @@ public class MyService extends InputMethodService implements CNNEditor {
             public void onClick(View v) {
 
 
-                if (!mExampleBlockOutput && !mExampleNoCharacterPressed) {
+                if (!getBlocked()) {
                     new OperationSingle().execute(0);
-                    //mOutput.setText(mDisplay);
+
                 }
                 else {
                     setOutput(" ");
@@ -201,22 +183,22 @@ public class MyService extends InputMethodService implements CNNEditor {
         mToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (type) {
+                switch (val.type) {
                     case Operation.EVAL_SINGLE_ALPHA_LOWER:
                         mToggle.setText("UPPER");
-                        type = Operation.EVAL_SINGLE_ALPHA_UPPER;
+                        val.type = Operation.EVAL_SINGLE_ALPHA_UPPER;
                         break;
                     case Operation.EVAL_SINGLE_ALPHA_UPPER:
                         mToggle.setText("#NUM#");
-                        type = Operation.EVAL_SINGLE_NUMERIC;
+                        val.type = Operation.EVAL_SINGLE_NUMERIC;
                         break;
                     case Operation.EVAL_SINGLE_NUMERIC:
                         mToggle.setText("lower");
-                        type = Operation.EVAL_SINGLE_ALPHA_LOWER;
+                        val.type = Operation.EVAL_SINGLE_ALPHA_LOWER;
                         break;
                     default:
                         mToggle.setText("lower");
-                        type = Operation.EVAL_SINGLE_ALPHA_LOWER;
+                        val.type = Operation.EVAL_SINGLE_ALPHA_LOWER;
                         break;
                 }
 
@@ -228,9 +210,11 @@ public class MyService extends InputMethodService implements CNNEditor {
             @Override
             public void onClick(View v) {
                 clearScreen();
-                mExampleBlockOutput = false;
+                val.mExampleBlockOutput = false;
+                InputConnection mConnection = getCurrentInputConnection();
+
                 //setOutput(Character.toString((char) KeyEvent.KEYCODE_DEL));
-                setOutput(KeyEvent.KEYCODE_DEL);
+                mConnection.deleteSurroundingText(1, 0);
             }
         });
 
@@ -275,14 +259,14 @@ public class MyService extends InputMethodService implements CNNEditor {
         //if (mExampleLoadComplete) progressBar.setVisibility(View.GONE);
 
         if (type == 1) {
-            if(mExampleLoadComplete) {
+            if(val.mExampleLoadComplete) {
                 mDisplay = "";
             }
 
         }
         try {
             if (mToggle != null) {
-                switch (this.type) {
+                switch (val.type) {
                     case Operation.EVAL_SINGLE_ALPHA_UPPER:
                         mToggle.setText("UPPER");
                         break;
@@ -325,25 +309,18 @@ public class MyService extends InputMethodService implements CNNEditor {
 
     public double [][] getScreen() { return screen ; }
 
-    public void setOutput(int in) {
-        InputConnection mConnection = getCurrentInputConnection();
-        try {
-
-            switch (in) {
-                case KeyEvent.KEYCODE_DEL:
-                    mConnection.deleteSurroundingText(1,0);
-                    break;
-                default:
-                    setOutput(String.valueOf(in));
-
-                    break;
-            }
-
+    public boolean getBlocked() {
+        boolean value = false;
+        if (!val.mExampleBlockOutput && !val.mExampleNoCharacterPressed) {
+            value = false;
         }
-        catch (Exception e) {e.printStackTrace();}
-
-        Log.e("ime","keycode " +in);
+        else {
+            value = true;
+        }
+        return value;
     }
+
+
 
     public void setOutput( String in ) {
         InputConnection mConnection = getCurrentInputConnection();
@@ -364,13 +341,13 @@ public class MyService extends InputMethodService implements CNNEditor {
     }
 
     public void examineScreen() {
-        mExampleNoCharacterPressed = true;
+        val.mExampleNoCharacterPressed = true;
         characterLeft = characterTop = 28;
         characterRight = characterBottom = 0;
         for (int i = 0; i < 28; i ++ ) {
             for (int j = 0; j < 28; j ++ ) {
                 if(screen[i][j] >= 0.5d) {
-                    mExampleNoCharacterPressed = false;
+                    val.mExampleNoCharacterPressed = false;
                     if (i < characterTop) { characterTop = i;}
                     if (j < characterLeft) {characterLeft = j;}
                     if (j > characterRight) {characterRight = j;}
@@ -383,12 +360,12 @@ public class MyService extends InputMethodService implements CNNEditor {
 
     public void resize() {
 
-        double[][] screenOut = new double[ONE_SIDE][ONE_SIDE];
+        double[][] screenOut = new double[CNNValues.ONE_SIDE][CNNValues.ONE_SIDE];
 
-        float mag =  (characterBottom - characterTop)/(float) (RULE_POSITION - 1);
-        int mLeftMove =(int) ((characterLeft + ( ONE_SIDE - characterRight)) /2.0f) - characterLeft;
+        float mag =  (characterBottom - characterTop)/(float) (val.RULE_POSITION - 1);
+        int mLeftMove =(int) ((characterLeft + ( CNNValues.ONE_SIDE - characterRight)) /2.0f) - characterLeft;
 
-        if(type == Operation.EVAL_SINGLE_ALPHA_UPPER  ) {
+        if(val.type == Operation.EVAL_SINGLE_ALPHA_UPPER  ) {
 
             if (mag >= 1.0f) mag = 1.0f;
 
@@ -398,21 +375,21 @@ public class MyService extends InputMethodService implements CNNEditor {
                     int yy = (int) (i * mag + characterTop);
                     int xx = mLeftMove + j;
 
-                    if (yy >= 0 && yy < ONE_SIDE && xx < ONE_SIDE && xx >= 0 && screen[yy][j] >= 0.5d) {
+                    if (yy >= 0 && yy < CNNValues.ONE_SIDE && xx < CNNValues.ONE_SIDE && xx >= 0 && screen[yy][j] >= 0.5d) {
                         screenOut[i][xx] = 1.0d;
                     }
                 }
             }
             screen = screenOut;
         }
-        if (type == Operation.EVAL_SINGLE_ALPHA_LOWER) {
+        if (val.type == Operation.EVAL_SINGLE_ALPHA_LOWER) {
 
             int ii = 0;
             mag = 1.0f;
 
-            if ( characterBottom < RULE_POSITION ) {
+            if ( characterBottom < val.RULE_POSITION ) {
 
-                ii = (characterTop + ( RULE_POSITION - characterBottom));
+                ii = (characterTop + ( val.RULE_POSITION - characterBottom));
             }
             else {
                 ii = characterTop;
@@ -424,8 +401,8 @@ public class MyService extends InputMethodService implements CNNEditor {
                     int yy = (int) (i * mag + characterTop);
                     int xx = mLeftMove + j;
 
-                    if (yy >= 0 && yy < ONE_SIDE && xx < ONE_SIDE &&
-                            xx >= 0 && i + ii < ONE_SIDE && i + ii >= 0 && screen[yy][j] >= 0.5d) {
+                    if (yy >= 0 && yy < CNNValues.ONE_SIDE && xx < CNNValues.ONE_SIDE &&
+                            xx >= 0 && i + ii < CNNValues.ONE_SIDE && i + ii >= 0 && screen[yy][j] >= 0.5d) {
                         screenOut[i+ii][xx] = 1.0d;
                     }
                 }
@@ -441,126 +418,20 @@ public class MyService extends InputMethodService implements CNNEditor {
         Display display = wm.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
-        mWindowHeight = metrics.heightPixels;
-        mWindowWidth = metrics.widthPixels;
+        val.mWindowHeight = metrics.heightPixels;
+        val.mWindowWidth = metrics.widthPixels;
     }
 
 
     public void setScreen(double [][] in) {screen = in;}
 
-    class InnerView extends View {
 
-        double [][] viewScreen = new double[ONE_SIDE][ONE_SIDE];
-
-        public InnerView(Context c) {
-            super(c);
-
-        }
-
-        @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        }
-
-        @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-
-            float xx = (mViewWidth - (marginLeft+marginRight)) / (float) ONE_SIDE;
-            float yy = (mViewHeight - (marginTop+marginBottom)) /(float) ONE_SIDE;
-
-            if(type == Operation.EVAL_SINGLE_ALPHA_LOWER) {
-                mPaint.setColor(Color.BLUE);
-                canvas.drawRect(0, yy * RULE_POSITION, mViewWidth, (yy * RULE_POSITION) + 2, mPaint);
-            }
-
-            mPaint.setColor(Color.LTGRAY);
-            canvas.drawRect(0,0,mViewWidth,mViewHeight,mPaint);
-
-            for (int i = 0; i < 28; i++) {
-                for (int j = 0; j < 28; j++) {
-                    if (viewScreen[j][i] > 0.5d) {
-
-                        int xpos = (int) (i * xx) + marginLeft;
-                        int ypos = (int) (j * yy) + marginTop;
-
-                        mPaint.setColor(Color.BLACK);
-                        canvas.drawRect(xpos, ypos, xpos+ (int) (xx - 2), ypos + (int) (yy - 2), mPaint);
-                    }
-                }
-            }
-
-
-        }
-
-        @Override
-        protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-            super.onSizeChanged(w, h, oldw, oldh);
-            mViewWidth = w;
-            mViewHeight = h;
-        }
-
-        @Override
-        public boolean onTouchEvent(MotionEvent event) {
-
-            if(mExampleBlockOutput) return true;
-
-            int sizex = mViewWidth - (marginRight + marginLeft);
-            int sizey = mViewHeight - (marginTop + marginBottom);
-
-            int xx = (int) event.getX() - marginLeft;
-            int yy = (int) event.getY() - marginTop;
-
-            int posx = (int) (xx / (float) sizex * ONE_SIDE);
-            int posy = (int) (yy / (float) sizey * ONE_SIDE);
-
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                case MotionEvent.ACTION_MOVE:
-
-                    brushScreen(posx,posy);
-
-
-                    invalidate();
-
-                    setScreen(viewScreen);
-
-                    break;
-                case MotionEvent.ACTION_UP:
-                    break;
-            }
-
-            return true;
-            //return super.onTouchEvent(event);
-
-        }
-
-        public  void brushScreen(int x, int y) {
-            if(mExampleNoBrush) {
-                viewScreen[y][x] = 1.0d;
-                return;
-            }
-            for (int i = y - 1; i < y + 1; i ++) {
-                for (int j = x - 1; j < x + 1; j ++) {
-                    if (i >= 0 && i < 28 && j >= 0 && j < 28) {
-                        if (write) {
-                            viewScreen[i][j] = 1.0d;
-                            //Log.e("color","color");
-                        }
-                        else {
-                            viewScreen[i][j] = 0.0d;
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     class ExampleInstantiate extends AsyncTask< Integer , Integer , Integer > {
 
         @Override
         protected void onPreExecute() {
-            mExampleLoadComplete = false;
+            val.mExampleLoadComplete = false;
             mDisplay = "LOADING";
             //progressBar.setVisibility(View.VISIBLE);
 
@@ -585,7 +456,7 @@ public class MyService extends InputMethodService implements CNNEditor {
 
         @Override
         protected void onPostExecute(Integer integer) {
-            mExampleLoadComplete = true;
+            val.mExampleLoadComplete = true;
             mDisplay = "";
             TextView mOutput = (TextView) mMyServiceView.findViewById(R.id.textView);
             mOutput.setText(mDisplay);
@@ -606,10 +477,10 @@ public class MyService extends InputMethodService implements CNNEditor {
 
         @Override
         protected void onPreExecute() {
-            mExampleBlockOutput = true;
+            val.mExampleBlockOutput = true;
             examineScreen();
 
-            if (mExampleTreatOutput) {
+            if (val.mExampleTreatOutput) {
                 resize();
             }
             super.onPreExecute();
@@ -620,13 +491,13 @@ public class MyService extends InputMethodService implements CNNEditor {
         @Override
         protected String doInBackground(Integer... params) {
             String mOutput = "";
-            if(mExampleLoadComplete) {
+            if(val.mExampleLoadComplete) {
                 if (operations != null && operations.length == 3) {
                     try {
 
                         //choose which neural network!!
                         for (int i = 0; i < operations.length; i ++) {
-                            if (type == operations[i].getEvalType()) {
+                            if (val.type == operations[i].getEvalType()) {
                                 operations[i].startOperation(getScreen());
                                 mOutput = operations[i].getOutput();
                             }
@@ -648,7 +519,7 @@ public class MyService extends InputMethodService implements CNNEditor {
         protected void onPostExecute(String in) {
             setOutput(in);
             clearScreen();
-            mExampleBlockOutput = false;
+            val.mExampleBlockOutput = false;
             super.onPostExecute(in);
         }
     }
