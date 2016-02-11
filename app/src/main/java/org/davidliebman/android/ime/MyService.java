@@ -25,6 +25,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodInfo;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -238,11 +239,24 @@ public class MyService extends InputMethodService implements CNNEditor {
         mRightCursor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setOutput(KeyEvent.KEYCODE_CTRL_RIGHT);
+                InputConnection mConnection = getCurrentInputConnection();
+
+                mConnection.commitText("",2);
             }
         });
 
+        Button mLeftCursor = (Button) inputView.findViewById(R.id.leftCursor);
+        mLeftCursor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputConnection mConnection = getCurrentInputConnection();
 
+
+                mConnection.commitText("",-1);
+
+
+            }
+        });
 
         return inputView;
     }
