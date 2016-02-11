@@ -7,7 +7,7 @@ public class CNNValues {
 
     public static final int ONE_SIDE = 28;
     int RULE_POSITION = 18;
-    boolean write = false;
+    boolean write = true;
     int type = Operation.EVAL_SINGLE_ALPHA_UPPER;
 
     int mViewHeight = 0, mViewWidth = 0;
@@ -21,4 +21,15 @@ public class CNNValues {
     boolean mExampleNoCharacterPressed = false;
     boolean mExampleNoBrush = false;
     boolean mExampleInitInService = false;
+
+    public boolean getBlocked() {
+        boolean value = false;
+        if (!this.mExampleBlockOutput && !this.mExampleNoCharacterPressed) {
+            value = false;
+        }
+        else {
+            value = true;
+        }
+        return value;
+    }
 }

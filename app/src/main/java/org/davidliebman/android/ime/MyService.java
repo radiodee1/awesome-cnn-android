@@ -42,24 +42,20 @@ public class MyService extends InputMethodService implements CNNEditor {
     MyService mMyService;
     View mMyServiceView;
 
-    final static CNNValues val = new CNNValues();
+    CNNValues val = new CNNValues();
 
     double[][] screen = new double[28][28];
-    boolean write = true;
-    //int type = Operation.EVAL_SINGLE_ALPHA_UPPER;
+
 
     Operation [] operations;
     String mDisplay = "";
 
     int characterLeft = 0, characterRight = 0, characterTop = 0, characterBottom = 0;
 
-    //private Canvas mCanvas;
+
     FrameLayout inputView;
 
     private CNNInnerView view;
-
-
-    //InputConnection mConnection;
 
     Button mWriteErase, mToggle;
     TextView mOutput;
@@ -109,7 +105,7 @@ public class MyService extends InputMethodService implements CNNEditor {
         LinearLayout topHalf = (LinearLayout)inputView.findViewById(R.id.topHalf);
         topHalf.setLayoutParams(lp);
 
-        view = new CNNInnerView(this,val ,this );
+        view = new CNNInnerView(this, val ,this );
 
 
         FrameLayout screenLoc = (FrameLayout) inputView.findViewById(R.id.innerView);
@@ -150,8 +146,8 @@ public class MyService extends InputMethodService implements CNNEditor {
             @Override
             public void onClick(View v) {
 
-
-                if (!getBlocked()) {
+                examineScreen();
+                if (!val.getBlocked()) {
                     new OperationSingle().execute(0);
 
                 }
@@ -166,13 +162,13 @@ public class MyService extends InputMethodService implements CNNEditor {
         mWriteErase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (write) {
-                    write = false;
+                if (val.write) {
+                    val.write = false;
                     mWriteErase.setText("ERASE");
                     //System.out.println("erase");
                 }
                 else {
-                    write = true;
+                    val.write = true;
                     mWriteErase.setText("WRITE");
                     //System.out.println("write");
                 }
@@ -282,7 +278,7 @@ public class MyService extends InputMethodService implements CNNEditor {
                 }
             }
             if (mWriteErase != null) {
-                if (!write) {
+                if (!val.write) {
                     mWriteErase.setText("ERASE");
                     //System.out.println("erase");
                 }
@@ -309,16 +305,7 @@ public class MyService extends InputMethodService implements CNNEditor {
 
     public double [][] getScreen() { return screen ; }
 
-    public boolean getBlocked() {
-        boolean value = false;
-        if (!val.mExampleBlockOutput && !val.mExampleNoCharacterPressed) {
-            value = false;
-        }
-        else {
-            value = true;
-        }
-        return value;
-    }
+
 
 
 
@@ -478,7 +465,7 @@ public class MyService extends InputMethodService implements CNNEditor {
         @Override
         protected void onPreExecute() {
             val.mExampleBlockOutput = true;
-            examineScreen();
+
 
             if (val.mExampleTreatOutput) {
                 resize();
