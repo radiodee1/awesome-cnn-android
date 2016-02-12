@@ -74,12 +74,16 @@ dependencies {
 
     //testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
-    compile 'com.android.support:design:23.1.1'
+    //compile 'com.android.support:design:23.1.1'
+    //compile("org.deeplearning4j:deeplearning4j-core:0.4-rc3.9-SNAPSHOT"){
+
     compile("org.deeplearning4j:deeplearning4j-core:0.4-rc3.9-SNAPSHOT"){
         exclude group: "ch.qos.logback", module: "logback-core"
         exclude group: "ch.qos.logback", module: "logback-classic"
 
     }
+    //compile("org.nd4j:nd4j-x86:0.4-rc3.9-SNAPSHOT"){
+
     compile("org.nd4j:nd4j-x86:0.4-rc3.9-SNAPSHOT"){
         exclude group: "ch.qos.logback", module: "logback-core"
         exclude group: "ch.qos.logback", module: "logback-classic"

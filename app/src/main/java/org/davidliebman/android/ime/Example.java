@@ -80,7 +80,7 @@ public class Example {
 
         System.setProperty("org.nd4j.linalg.cpu.force_native","false");
 
-        Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
+        //Nd4j.ENFORCE_NUMERICAL_STABILITY = true;
 
 
     }
