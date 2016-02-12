@@ -1,0 +1,4 @@
+Neural networks in this project use Skymind Ink's 'deeplearning4j' package,
+which is licensed under the Apache 2 license. Most Skymind code can
+be found in the files 'Network.java' and 'Operation.java' in the folder
+'app/src/main/java/org/davidliebman/android/ime/'. 
