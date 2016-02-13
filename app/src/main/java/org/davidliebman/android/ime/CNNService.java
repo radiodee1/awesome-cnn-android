@@ -52,7 +52,7 @@ public class CNNService extends InputMethodService implements CNNEditor {
 
     int characterLeft = 0, characterRight = 0, characterTop = 0, characterBottom = 0;
 
-
+    ProgressBar mProgress;
     FrameLayout inputView;
 
     private CNNInnerView view;
@@ -221,7 +221,7 @@ public class CNNService extends InputMethodService implements CNNEditor {
             public void onClick(View v) {
                 InputConnection mConnection = getCurrentInputConnection();
 
-                mConnection.commitText("",2);
+                mConnection.commitText("", 2);
             }
         });
 
@@ -232,11 +232,14 @@ public class CNNService extends InputMethodService implements CNNEditor {
                 InputConnection mConnection = getCurrentInputConnection();
 
 
-                mConnection.commitText("",-1);
+                mConnection.commitText("", -1);
 
 
             }
         });
+
+        mProgress = (ProgressBar) inputView.findViewById(R.id.progressBar);
+        mProgress.setMax(10);
 
         return inputView;
     }
@@ -253,6 +256,9 @@ public class CNNService extends InputMethodService implements CNNEditor {
         //progressBar.setMax(10);
 
         //if (mExampleLoadComplete) progressBar.setVisibility(View.GONE);
+        if(!val.mExampleLoadComplete && mProgress != null ) {
+            mProgress.setProgress(3);
+        }
 
         if (type == 1) {
             if(val.mExampleLoadComplete) {
@@ -447,7 +453,10 @@ public class CNNService extends InputMethodService implements CNNEditor {
             mDisplay = "";
             TextView mOutput = (TextView) mMyServiceView.findViewById(R.id.textView);
             mOutput.setText(mDisplay);
-            //if (progressBar != null) progressBar.hide();
+            if (mProgress != null) {
+                mProgress.setProgress(15);
+                mProgress.setVisibility(View.GONE);
+            }
             super.onPostExecute(integer);
         }
 

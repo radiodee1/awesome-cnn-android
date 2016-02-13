@@ -20,7 +20,15 @@
             android:layout_weight="0.5"
             android:theme="@style/AppTheme.Custom"
             android:layout_gravity="top"
-            android:id="@+id/topHalf"></LinearLayout>
+            android:id="@+id/topHalf">
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:id="@+id/progressBar" />
+
+        </LinearLayout>
 
         <include layout="@layout/content_main"
             android:layout_weight="0.5"
