@@ -53,7 +53,7 @@ public class CNNService extends InputMethodService implements CNNEditor {
     int characterLeft = 0, characterRight = 0, characterTop = 0, characterBottom = 0;
 
     ProgressBar mProgress;
-    FrameLayout inputView;
+    RelativeLayout inputView;
 
     private CNNInnerView view;
 
@@ -95,16 +95,25 @@ public class CNNService extends InputMethodService implements CNNEditor {
     @Override
     public View onCreateInputView() {
 
-        inputView = (FrameLayout) getLayoutInflater().inflate( R.layout.ime_main, null);
 
         setWindowDimensions();
-
+        /*
+        inputView = (FrameLayout) getLayoutInflater().inflate( R.layout.ime_main, null);
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, val.mWindowHeight/2);
         //(FrameLayout.LayoutParams) inputView.getLayoutParams();
         LinearLayout topHalf = (LinearLayout)inputView.findViewById(R.id.topHalf);
         topHalf.setLayoutParams(lp);
+        */
 
+        inputView = (RelativeLayout) getLayoutInflater().inflate(R.layout.content_main, null);
+        /*
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, val.mWindowHeight/2);
+        lp.gravity = Gravity.BOTTOM;
+        lp.height = val.mWindowHeight/2;
+        inputView.setLayoutParams(lp);
+        */
+        //////////////////////////////////
         view = new CNNInnerView(this, val ,this );
 
 
@@ -246,8 +255,8 @@ public class CNNService extends InputMethodService implements CNNEditor {
             }
         });
 
-        mProgress = (ProgressBar) inputView.findViewById(R.id.progressBar);
-        mProgress.setMax(10);
+        //mProgress = (ProgressBar) inputView.findViewById(R.id.progressBar);
+        //mProgress.setMax(10);
 
         return inputView;
     }
@@ -262,7 +271,10 @@ public class CNNService extends InputMethodService implements CNNEditor {
 
         //progressBar = (ProgressBar) inputView.findViewById(R.id.progressBar);
         //progressBar.setMax(10);
-
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, val.mWindowHeight/2);
+        lp.gravity = Gravity.BOTTOM;
+        lp.height = val.mWindowHeight/2;
+        inputView.setLayoutParams(lp);
         //if (mExampleLoadComplete) progressBar.setVisibility(View.GONE);
         if(!val.mExampleLoadComplete && mProgress != null ) {
             mProgress.setProgress(3);
