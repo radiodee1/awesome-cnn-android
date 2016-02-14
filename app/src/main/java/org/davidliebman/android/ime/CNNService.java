@@ -238,6 +238,14 @@ public class CNNService extends InputMethodService implements CNNEditor {
             }
         });
 
+        Button mGoButton = (Button) inputView.findViewById(R.id.goButton);
+        mGoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setOutput("\n");
+            }
+        });
+
         mProgress = (ProgressBar) inputView.findViewById(R.id.progressBar);
         mProgress.setMax(10);
 
