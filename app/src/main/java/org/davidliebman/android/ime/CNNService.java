@@ -493,8 +493,9 @@ public class CNNService extends InputMethodService implements CNNEditor {
 
         @Override
         protected void onPreExecute() {
-            val.mExampleBlockOutput = true;
 
+            val.mExampleBlockOutput = true;
+            view.invalidate();
 
             if (val.mExampleTreatOutput) {
                 resize();

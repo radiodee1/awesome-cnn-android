@@ -44,19 +44,21 @@ public class CNNInnerView extends View {
         mPaint.setColor(Color.LTGRAY);
         canvas.drawRect(0,0,val.mViewWidth,val.mViewHeight,mPaint);
 
-        for (int i = 0; i < 28; i++) {
-            for (int j = 0; j < 28; j++) {
-                if (viewScreen[j][i] > 0.5d) {
+        if (!val.mExampleBlockOutput) {
+            for (int i = 0; i < 28; i++) {
+                for (int j = 0; j < 28; j++) {
+                    if (viewScreen[j][i] > 0.5d) {
 
-                    int xpos = (int) (i * xx) + val.marginLeft;
-                    int ypos = (int) (j * yy) + val.marginTop;
+                        int xpos = (int) (i * xx) + val.marginLeft;
+                        int ypos = (int) (j * yy) + val.marginTop;
 
-                    mPaint.setColor(Color.BLACK);
-                    canvas.drawRect(xpos, ypos, xpos+ (int) (xx - 2), ypos + (int) (yy - 2), mPaint);
+                        mPaint.setColor(Color.BLACK);
+                        canvas.drawRect(xpos, ypos, xpos + (int) (xx - 2), ypos + (int) (yy - 2), mPaint);
+                    }
                 }
             }
         }
-
+        //////
 
     }
 
