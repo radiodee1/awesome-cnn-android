@@ -255,8 +255,8 @@ public class CNNService extends InputMethodService implements CNNEditor {
             }
         });
 
-        //mProgress = (ProgressBar) inputView.findViewById(R.id.progressBar);
-        //mProgress.setMax(10);
+        mProgress = (ProgressBar) inputView.findViewById(R.id.progressBar);
+        mProgress.setMax(10);
 
         return inputView;
     }

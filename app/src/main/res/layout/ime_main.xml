@@ -22,11 +22,7 @@
             android:layout_gravity="top"
             android:id="@+id/topHalf">
 
-            <ProgressBar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
-                android:id="@+id/progressBar" />
+
 
         </LinearLayout>
 

@@ -93,12 +93,26 @@
 
                 <FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="top|bottom|center"
-                    android:id="@+id/innerView">
+                    android:layout_height="wrap_content">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="top|bottom|center"
+                        android:id="@+id/innerView">
+
+
+
+                    </FrameLayout>
+
+                    <ProgressBar
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|center_vertical"
+                        android:id="@+id/progressBar" />
+
 
                 </FrameLayout>
-
                 <Button
                     style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
