@@ -84,13 +84,32 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal">
 
-                <Button
-                    style="?android:attr/buttonStyleSmall"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="&lt;&lt;----"
-                    android:id="@+id/leftCursor"
-                    android:gravity="center_vertical|left" />
+                    android:orientation="vertical">
+
+                    <Button
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="&lt;&lt;----"
+                        android:id="@+id/leftCursor"
+                        android:gravity="center_vertical|left" />
+
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spinnerLeftTop">
+
+                    </Spinner>
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spinnerLeftBottom">
+
+                    </Spinner>
+                </LinearLayout>
 
                 <FrameLayout
                     android:layout_width="wrap_content"
@@ -114,13 +133,34 @@
 
 
                 </FrameLayout>
-                <Button
-                    style="?android:attr/buttonStyleSmall"
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="---->>"
-                    android:id="@+id/rightCursor"
-                    android:gravity="center_vertical|right" />
+                    android:orientation="vertical">
+
+                    <Button
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="---->>"
+                        android:id="@+id/rightCursor"
+                        android:gravity="center_vertical|right" />
+
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spinnerRightTop">
+
+                    </Spinner>
+
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spinnerRightBottom">
+
+                    </Spinner>
+                </LinearLayout>
 
             </LinearLayout>
 

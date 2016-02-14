@@ -26,11 +26,14 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class CNNService extends InputMethodService implements CNNEditor {
@@ -49,6 +52,7 @@ public class CNNService extends InputMethodService implements CNNEditor {
 
     Operation [] operations;
     String mDisplay = "";
+    String mSpecificOutput = "";
 
     int characterLeft = 0, characterRight = 0, characterTop = 0, characterBottom = 0;
 
@@ -97,22 +101,10 @@ public class CNNService extends InputMethodService implements CNNEditor {
 
 
         setWindowDimensions();
-        /*
-        inputView = (FrameLayout) getLayoutInflater().inflate( R.layout.ime_main, null);
 
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, val.mWindowHeight/2);
-        //(FrameLayout.LayoutParams) inputView.getLayoutParams();
-        LinearLayout topHalf = (LinearLayout)inputView.findViewById(R.id.topHalf);
-        topHalf.setLayoutParams(lp);
-        */
 
         inputView = (RelativeLayout) getLayoutInflater().inflate(R.layout.content_main, null);
-        /*
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, val.mWindowHeight/2);
-        lp.gravity = Gravity.BOTTOM;
-        lp.height = val.mWindowHeight/2;
-        inputView.setLayoutParams(lp);
-        */
+
         //////////////////////////////////
         view = new CNNInnerView(this, val ,this );
 
@@ -148,7 +140,119 @@ public class CNNService extends InputMethodService implements CNNEditor {
         mMyService = this;
         mMyServiceView = inputView;
 
+        Spinner mSymbols = (Spinner) inputView.findViewById(R.id.spinnerRightTop);
+        ArrayAdapter<CharSequence> staticAdapterSymbols = ArrayAdapter
+                .createFromResource(this, R.array.symbols,
+                        android.R.layout.simple_spinner_item);
+        staticAdapterSymbols.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSymbols.setAdapter(staticAdapterSymbols);
+        mSymbols.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+                mSpecificOutput = (String) parent.getItemAtPosition(position);
+
+                if(!mSpecificOutput.equalsIgnoreCase((String) parent.getItemAtPosition(0))) {
+                    ((Button) inputView.findViewById(R.id.rightAccept)).setText("--" + mSpecificOutput + "--");
+                }
+                else {
+                    mSpecificOutput = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mSpecificOutput = "";
+                ((Button)inputView.findViewById(R.id.rightAccept)).setText("ENTER");
+
+            }
+        });
+
+        Spinner mNumbers = (Spinner) inputView.findViewById(R.id.spinnerRightBottom);
+        ArrayAdapter<CharSequence> staticAdapterNumbers = ArrayAdapter
+                .createFromResource(this, R.array.numbers,
+                        android.R.layout.simple_spinner_item);
+        staticAdapterNumbers.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mNumbers.setAdapter(staticAdapterNumbers);
+        mNumbers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                mSpecificOutput = (String) parent.getItemAtPosition(position);
+
+                if(!mSpecificOutput.equalsIgnoreCase((String) parent.getItemAtPosition(0))) {
+                    ((Button) inputView.findViewById(R.id.rightAccept)).setText("--" + mSpecificOutput + "--");
+                }
+                else {
+                    mSpecificOutput = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mSpecificOutput = "";
+                ((Button)inputView.findViewById(R.id.rightAccept)).setText("ENTER");
+
+            }
+        });
+
+        Spinner mUppers = (Spinner) inputView.findViewById(R.id.spinnerLeftTop);
+        ArrayAdapter<CharSequence> staticAdapterUppers = ArrayAdapter
+                .createFromResource(this, R.array.uppers,
+                        android.R.layout.simple_spinner_item);
+        staticAdapterUppers.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mUppers.setAdapter(staticAdapterUppers);
+        mUppers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                mSpecificOutput = (String) parent.getItemAtPosition(position);
+
+                if(!mSpecificOutput.equalsIgnoreCase((String) parent.getItemAtPosition(0))) {
+                    ((Button) inputView.findViewById(R.id.rightAccept)).setText("--" + mSpecificOutput + "--");
+                }
+                else {
+                    mSpecificOutput = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mSpecificOutput = "";
+                ((Button)inputView.findViewById(R.id.rightAccept)).setText("ENTER");
+
+            }
+        });
+
+        Spinner mLowers = (Spinner) inputView.findViewById(R.id.spinnerLeftBottom);
+        ArrayAdapter<CharSequence> staticAdapterLowers = ArrayAdapter
+                .createFromResource(this, R.array.lowers,
+                        android.R.layout.simple_spinner_item);
+        staticAdapterLowers.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mLowers.setAdapter(staticAdapterLowers);
+        mLowers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                mSpecificOutput = (String) parent.getItemAtPosition(position);
+
+                if(!mSpecificOutput.equalsIgnoreCase((String) parent.getItemAtPosition(0))) {
+                    ((Button) inputView.findViewById(R.id.rightAccept)).setText("--" + mSpecificOutput + "--");
+                }
+                else {
+                    mSpecificOutput = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mSpecificOutput = "";
+                ((Button)inputView.findViewById(R.id.rightAccept)).setText("ENTER");
+
+            }
+        });
+
+        ////////////////////////////////////////////////////////
 
         Button mRightAccept = (Button) inputView.findViewById(R.id.rightAccept);
         mRightAccept.setOnClickListener(new View.OnClickListener() {
@@ -161,8 +265,16 @@ public class CNNService extends InputMethodService implements CNNEditor {
 
                 }
                 else {
-                    setOutput(" ");
+                    if(mSpecificOutput.equalsIgnoreCase("")) {
+                        setOutput(" ");
+                    }
+                    else {
+                        setOutput(mSpecificOutput);
+                        mSpecificOutput = "";
+                    }
                 }
+                ((Button)inputView.findViewById(R.id.rightAccept)).setText("ENTER");
+
             }
 
         });
@@ -269,13 +381,13 @@ public class CNNService extends InputMethodService implements CNNEditor {
     public void onStartInputView(EditorInfo info, boolean restarting) {
         int type = info.inputType & InputType.TYPE_CLASS_TEXT;
 
-        //progressBar = (ProgressBar) inputView.findViewById(R.id.progressBar);
-        //progressBar.setMax(10);
+
+
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, val.mWindowHeight/2);
         lp.gravity = Gravity.BOTTOM;
         lp.height = val.mWindowHeight/2;
         inputView.setLayoutParams(lp);
-        //if (mExampleLoadComplete) progressBar.setVisibility(View.GONE);
+
         if(!val.mExampleLoadComplete && mProgress != null ) {
             mProgress.setProgress(3);
         }
@@ -438,7 +550,12 @@ public class CNNService extends InputMethodService implements CNNEditor {
     }
 
 
-    public void setScreen(double [][] in) {screen = in;}
+    public void setScreen(double [][] in) {
+        screen = in;
+        mSpecificOutput = "";
+        ((Button)inputView.findViewById(R.id.rightAccept)).setText("ENTER");
+
+    }
 
 
 
