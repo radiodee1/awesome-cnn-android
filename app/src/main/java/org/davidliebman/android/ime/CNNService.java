@@ -338,7 +338,9 @@ public class CNNService extends InputMethodService implements CNNEditor {
     public void setOutput( String in ) {
         InputConnection mConnection = getCurrentInputConnection();
         mConnection.commitText(in,1);
-        mDisplay = mDisplay + in;
+        if (!in.equalsIgnoreCase("\n")) {
+            mDisplay = mDisplay + in;
+        }
         TextView mOutput = (TextView) mMyServiceView.findViewById(R.id.textView);
         mOutput.setText(mDisplay);
         //System.out.println("setOutput " + mDisplay);
