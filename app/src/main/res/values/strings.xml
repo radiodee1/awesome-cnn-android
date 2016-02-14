@@ -3,7 +3,7 @@
     <string name="action_settings">Settings</string>
 
     <string-array name="symbols">
-        <item>SYM</item>
+        <item>SM</item>
         <item>!</item>
         <item>\@</item>
         <item>#</item>
@@ -35,7 +35,7 @@
     </string-array>
 
     <string-array name="numbers">
-        <item>NUM</item>
+        <item>NM</item>
         <item>0</item>
         <item>1</item>
         <item>2</item>
@@ -49,7 +49,7 @@
     </string-array>
 
     <string-array name="uppers">
-        <item>UPS</item>
+        <item>UP</item>
         <item>A</item>
         <item>B</item>
         <item>C</item>
@@ -79,7 +79,7 @@
     </string-array>
 
     <string-array name="lowers">
-        <item>LOW</item>
+        <item>LO</item>
         <item>a</item>
         <item>b</item>
         <item>c</item>

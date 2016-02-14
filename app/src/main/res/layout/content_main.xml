@@ -87,7 +87,8 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:gravity="right">
 
                     <Button
                         style="?android:attr/buttonStyleSmall"
@@ -95,18 +96,20 @@
                         android:layout_height="wrap_content"
                         android:text="&lt;&lt;----"
                         android:id="@+id/leftCursor"
-                        android:gravity="center_vertical|left" />
+                        android:gravity="center_vertical|right" />
 
                     <Spinner
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/spinnerLeftTop">
+                        android:id="@+id/spinnerLeftTop"
+                        android:gravity="right">
 
                     </Spinner>
                     <Spinner
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/spinnerLeftBottom">
+                        android:id="@+id/spinnerLeftBottom"
+                        android:gravity="right">
 
                     </Spinner>
                 </LinearLayout>
