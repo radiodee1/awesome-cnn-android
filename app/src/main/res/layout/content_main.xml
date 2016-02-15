@@ -24,12 +24,11 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:gravity="center_horizontal">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="fill_horizontal|center_horizontal">
 
@@ -77,18 +76,29 @@
 
             </LinearLayout>
 
+        </LinearLayout>
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal">
+                android:layout_gravity="center_horizontal">
+
+                <!-- start of section -->
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="right">
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_horizontal">
+
+                <!--FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" -->
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <Button
                         style="?android:attr/buttonStyleSmall"
@@ -96,35 +106,49 @@
                         android:layout_height="wrap_content"
                         android:text="&lt;&lt;----"
                         android:id="@+id/leftCursor"
-                        android:gravity="center_vertical|right" />
+                        android:gravity="top|right"
+                        android:layout_gravity="right"
 
-                    <Spinner
+                        android:layout_alignParentTop="true" />
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/spinnerLeftTop"
-                        android:gravity="right">
+                        android:id="@+id/layoutLeftBottom"
+                        android:orientation="vertical"
+                        android:gravity="bottom"
 
-                    </Spinner>
-                    <Spinner
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/spinnerLeftBottom"
-                        android:gravity="right">
+                        android:layout_alignParentBottom="true">
 
-                    </Spinner>
-                </LinearLayout>
+                        <Spinner
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/spinnerLeftTop"
+                            android:gravity="right"
+                            android:layout_above="@+id/spinnerLeftBottom">
+
+                        </Spinner>
+                        <Spinner
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/spinnerLeftBottom"
+                            android:gravity="right">
+
+                        </Spinner>
+                    </LinearLayout>
+                </RelativeLayout>
+                <!-- /FrameLayout -->
 
                 <FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal">
 
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="top|bottom|center"
                         android:id="@+id/innerView">
-
-
 
                     </FrameLayout>
 
@@ -137,9 +161,13 @@
 
                 </FrameLayout>
 
-                <LinearLayout
+                <!--FrameLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent" -->
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <Button
@@ -148,26 +176,40 @@
                         android:layout_height="wrap_content"
                         android:text="---->>"
                         android:id="@+id/rightCursor"
-                        android:gravity="center_vertical|right" />
+                        android:gravity="right"
+                        android:layout_alignParentTop="true" />
 
-                    <Spinner
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/spinnerRightTop">
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:id="@+id/layoutRightBottom"
+                        android:gravity="bottom"
+                        android:layout_alignParentBottom="true">
 
-                    </Spinner>
+                        <Spinner
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/spinnerRightTop">
 
-                    <Spinner
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/spinnerRightBottom">
+                        </Spinner>
 
-                    </Spinner>
-                </LinearLayout>
+                        <Spinner
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/spinnerRightBottom">
 
+                        </Spinner>
+                    </LinearLayout>
+
+                </RelativeLayout>
+                <!-- /FrameLayout -->
             </LinearLayout>
 
-        </LinearLayout>
+                <!-- end of section -->
+
+            </LinearLayout>
+        <!-- /LinearLayout -->
 
     </LinearLayout>
 

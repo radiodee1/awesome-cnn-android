@@ -359,6 +359,9 @@ public class CNNService extends InputMethodService implements CNNEditor {
             }
         });
 
+
+
+
         Button mGoButton = (Button) inputView.findViewById(R.id.goButton);
         mGoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -384,7 +387,7 @@ public class CNNService extends InputMethodService implements CNNEditor {
 
 
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, val.mWindowHeight/2);
-        lp.gravity = Gravity.BOTTOM;
+        lp.gravity = Gravity.BOTTOM ;
         lp.height = val.mWindowHeight/2;
         inputView.setLayoutParams(lp);
 
@@ -592,6 +595,7 @@ public class CNNService extends InputMethodService implements CNNEditor {
             mDisplay = "";
             TextView mOutput = (TextView) mMyServiceView.findViewById(R.id.textView);
             mOutput.setText(mDisplay);
+            mOutput.setVisibility(View.GONE);
             if (mProgress != null) {
                 mProgress.setProgress(15);
                 mProgress.setVisibility(View.GONE);
