@@ -8,18 +8,6 @@
         android:name="android.support.multidex.MultiDexApplication"
         android:label="@string/app_name">
 
-        <!--
-        activity
-            android:name=".CNNAltActivity"
-            android:theme="@style/AppTheme.Custom">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity
-        -->
-
         <service
             android:name="org.davidliebman.android.ime.CNNService"
             android:enabled="true"
