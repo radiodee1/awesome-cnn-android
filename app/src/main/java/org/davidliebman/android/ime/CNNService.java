@@ -380,6 +380,11 @@ public class CNNService extends InputMethodService implements CNNEditorInterface
         if(!val.mExampleLoadComplete && mProgress != null ) {
             mProgress.setProgress(3);
         }
+        else {
+            if (mProgress != null) mProgress.setVisibility(View.GONE);
+            TextView mOutput = (TextView) mMyServiceView.findViewById(R.id.textView);
+            mOutput.setVisibility(View.GONE);
+        }
 
         if (type == 1) {
             if(val.mExampleLoadComplete) {
