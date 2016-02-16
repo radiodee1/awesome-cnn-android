@@ -1,6 +1,6 @@
 # awesome-cnn-android #
 
-Instructions:
+### Instructions: ###
 
 1. Load the app into your device.
 
@@ -18,7 +18,9 @@ Instructions:
 
 8. If you cannot get the neural network to recognise your drawings, there is a set of drop-down menus that will allow you to pick any character that is displayed on the normal keyboard and send it to the text-area. There are four of these dropdowns, for (a) numbers, (b) symbols, (c) upper-case letters, and (d) lower-case letters. They are located just to the right and left of the input area at the bottom of the screen. To use them, touch the drop-down menu and select the character you want. When you do this that character will appear on the label of the 'ENTER' key. Press the enter key at this time to send the selected character to the text area.
 
-About:
+---
+
+### About: ###
 
 This program uses convolutional neural networks to try to figure out what letter you are drawing on the screen and feed it to a android program as input. The neural networks used are of the 'LeNet' type, pioneered by Yann LeCun.
 
